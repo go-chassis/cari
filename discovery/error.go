@@ -22,6 +22,8 @@ import (
 	"fmt"
 )
 
+var errors = map[int32]string{}
+
 type Error struct {
 	Code    int32  `json:"errorCode,string"`
 	Message string `json:"errorMessage"`
