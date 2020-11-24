@@ -54,7 +54,33 @@ const (
 	ErrUnavailableQuota   int32 = 500101
 )
 
-var errors = map[int32]string{}
+var errorsMap = map[int32]string{
+	ErrInvalidParams:           "Invalid parameter(s)",
+	ErrUnhealthy:               "Server is Unhealthy",
+	ErrServiceAlreadyExists:    "Micro-service already exists",
+	ErrServiceNotExists:        "Micro-service does not exist",
+	ErrServiceVersionNotExists: "Micro-service version does not exist",
+	ErrDeployedInstance:        "Micro-service has deployed instance(s)",
+	ErrDependedOnConsumer:      "Consumer(s) depends on this micro-service",
+	ErrUndefinedSchemaID:       "Undefined schema id",
+	ErrModifySchemaNotAllow:    "Not allowed to modify schema",
+	ErrSchemaNotExists:         "Schema does not exist",
+	ErrInstanceNotExists:       "Instance does not exist",
+	ErrPermissionDeny:          "Access micro-service refused",
+	ErrTagNotExists:            "Tag does not exist",
+	ErrRuleAlreadyExists:       "Rule already exist",
+	ErrBlackAndWhiteRule:       "Can not have both 'BLACK' and 'WHITE'",
+	ErrModifyRuleNotAllow:      "Not allowed to modify the type of the rule",
+	ErrRuleNotExists:           "Rule does not exist",
+	ErrNotEnoughQuota:          "Not enough quota",
+	ErrUnauthorized:            "Request unauthorized",
+	ErrInternal:                "Internal server error",
+	ErrUnavailableBackend:      "Registry service is unavailable",
+	ErrUnavailableQuota:        "Quota service is unavailable",
+	ErrEndpointAlreadyExists:   "Endpoint is already belong to other service",
+	ErrForbidden:               "Forbidden",
+	ErrConflictAccount:         "account name is duplicated",
+}
 
 type Error struct {
 	Code    int32  `json:"errorCode,string"`
@@ -85,11 +111,20 @@ func (e *Error) InternalError() bool {
 func NewError(code int32, detail string) *Error {
 	return &Error{
 		Code:    code,
-		Message: errors[code],
+		Message: errorsMap[code],
 		Detail:  detail,
 	}
 }
 
 func NewErrorf(code int32, format string, args ...interface{}) *Error {
 	return NewError(code, fmt.Sprintf(format, args...))
+}
+func RegisterErrors(errs map[int32]string) {
+	for err, msg := range errs {
+		if err < 400000 || err >= 600000 {
+			fmt.Sprintf("error code[%v] should be between 4xx and 5xx\n", err)
+			continue
+		}
+		errorsMap[err] = msg
+	}
 }
