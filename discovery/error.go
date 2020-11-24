@@ -22,6 +22,38 @@ import (
 	"fmt"
 )
 
+const (
+	ErrInvalidParams           int32 = 400001
+	ErrUnhealthy               int32 = 400002
+	ErrServiceAlreadyExists    int32 = 400010
+	ErrServiceNotExists        int32 = 400012
+	ErrDeployedInstance        int32 = 400013
+	ErrUndefinedSchemaID       int32 = 400014
+	ErrModifySchemaNotAllow    int32 = 400015
+	ErrSchemaNotExists         int32 = 400016
+	ErrInstanceNotExists       int32 = 400017
+	ErrTagNotExists            int32 = 400018
+	ErrRuleAlreadyExists       int32 = 400019
+	ErrBlackAndWhiteRule       int32 = 400020
+	ErrModifyRuleNotAllow      int32 = 400021
+	ErrRuleNotExists           int32 = 400022
+	ErrDependedOnConsumer      int32 = 400023
+	ErrPermissionDeny          int32 = 400024
+	ErrEndpointAlreadyExists   int32 = 400025
+	ErrServiceVersionNotExists int32 = 400026
+	ErrNotEnoughQuota          int32 = 400100
+
+	ErrUnauthorized int32 = 401002
+
+	ErrForbidden int32 = 403001
+
+	ErrConflictAccount int32 = 409001
+
+	ErrInternal           int32 = 500003
+	ErrUnavailableBackend int32 = 500011
+	ErrUnavailableQuota   int32 = 500101
+)
+
 var errors = map[int32]string{}
 
 type Error struct {
