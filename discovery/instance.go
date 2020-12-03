@@ -121,3 +121,24 @@ type GetAllInstancesResponse struct {
 	Response  *Response               `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
 	Instances []*MicroServiceInstance `protobuf:"bytes,2,rep,name=instances" json:"instances,omitempty"`
 }
+
+type ProviderService struct {
+	Environment string `protobuf:"bytes,1,opt,name=environment" json:"environment,omitempty"`
+	AppId       string `protobuf:"bytes,2,opt,name=appId" json:"appId,omitempty"`
+	ServiceName string `protobuf:"bytes,3,opt,name=serviceName" json:"serviceName,omitempty"`
+}
+
+type GetProviderAllInstancesRequest struct {
+	SelfServiceId string `protobuf:"bytes,1,opt,name=selfServiceId" json:"selfServiceId,omitempty"`
+}
+
+type ProviderInstances struct {
+	Version   string                  `protobuf:"bytes,1,opt,name=version" json:"version,omitempty"`
+	Instances []*MicroServiceInstance `protobuf:"bytes,2,rep,name=instances" json:"instances,omitempty"`
+}
+
+type GetProviderAllInstancesResponse struct {
+	Response *Response            `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Provider ProviderService      `protobuf:"bytes,2,opt,name=provider" json:"provider,omitempty"`
+	Versions []*ProviderInstances `protobuf:"bytes,3,opt,name=versions" json:"versions,omitempty"`
+}
