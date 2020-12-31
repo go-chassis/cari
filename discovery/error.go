@@ -43,11 +43,7 @@ const (
 	ErrServiceVersionNotExists int32 = 400026
 	ErrNotEnoughQuota          int32 = 400100
 
-	ErrUnauthorized int32 = 401002
-
 	ErrForbidden int32 = 403001
-
-	ErrConflictAccount int32 = 409001
 
 	ErrInternal           int32 = 500003
 	ErrUnavailableBackend int32 = 500011
@@ -73,13 +69,11 @@ var errorsMap = map[int32]string{
 	ErrModifyRuleNotAllow:      "Not allowed to modify the type of the rule",
 	ErrRuleNotExists:           "Rule does not exist",
 	ErrNotEnoughQuota:          "Not enough quota",
-	ErrUnauthorized:            "Request unauthorized",
 	ErrInternal:                "Internal server error",
 	ErrUnavailableBackend:      "Registry service is unavailable",
 	ErrUnavailableQuota:        "Quota service is unavailable",
 	ErrEndpointAlreadyExists:   "Endpoint is already belong to other service",
 	ErrForbidden:               "Forbidden",
-	ErrConflictAccount:         "account name is duplicated",
 }
 
 type Error struct {

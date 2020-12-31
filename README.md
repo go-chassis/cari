@@ -9,3 +9,6 @@ defines a standard service for register and discovery, service like eureka,consu
 
 ## security
 defines a common interface to encrypt and decrypt info
+
+## rbac
+defines a common struct to account and role info
