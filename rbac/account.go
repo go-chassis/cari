@@ -23,9 +23,11 @@ type AccountResponse struct {
 }
 
 type Account struct {
-	ID                  string   `json:"id,omitempty"`
-	Name                string   `json:"name,omitempty"`
-	Password            string   `json:"password,omitempty"`
+	ID       string `json:"id,omitempty"`
+	Name     string `json:"name,omitempty"`
+	Password string `json:"password,omitempty"`
+	//Deprecated
+	Role                string   `json:"role,omitempty"`
 	Roles               []string `json:"roles,omitempty"`
 	TokenExpirationTime string   `json:"tokenExpirationTime,omitempty"`
 	CurrentPassword     string   `json:"currentPassword,omitempty"`
