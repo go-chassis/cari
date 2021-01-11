@@ -40,6 +40,7 @@ type FindInstancesRequest struct {
 	VersionRule       string   `protobuf:"bytes,4,opt,name=versionRule" json:"versionRule,omitempty"`
 	Tags              []string `protobuf:"bytes,5,rep,name=tags" json:"tags,omitempty"`
 	Environment       string   `protobuf:"bytes,6,opt,name=environment" json:"environment,omitempty"`
+	Alias             string   `protobuf:"bytes,7,opt,name=alias" json:"alias,omitempty"`
 }
 type FindInstancesResponse struct {
 	Response  *Response               `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
