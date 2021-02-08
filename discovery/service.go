@@ -18,9 +18,9 @@
 package discovery
 
 type MicroService struct {
-	ServiceId    string             `protobuf:"bytes,1,opt,name=serviceId" json:"serviceId,omitempty"`
+	ServiceId    string             `protobuf:"bytes,1,opt,name=serviceId" json:"serviceId,omitempty" bson:"service_id"`
 	AppId        string             `protobuf:"bytes,2,opt,name=appId" json:"appId,omitempty" bson:"app"`
-	ServiceName  string             `protobuf:"bytes,3,opt,name=serviceName" json:"serviceName,omitempty"`
+	ServiceName  string             `protobuf:"bytes,3,opt,name=serviceName" json:"serviceName,omitempty" bson:"service_name"`
 	Version      string             `protobuf:"bytes,4,opt,name=version" json:"version,omitempty"`
 	Description  string             `protobuf:"bytes,5,opt,name=description" json:"description,omitempty"`
 	Level        string             `protobuf:"bytes,6,opt,name=level" json:"level,omitempty"`
@@ -31,10 +31,10 @@ type MicroService struct {
 	Timestamp    string             `protobuf:"bytes,11,opt,name=timestamp" json:"timestamp,omitempty"`
 	Providers    []*MicroServiceKey `protobuf:"bytes,12,rep,name=providers" json:"providers,omitempty"`
 	Alias        string             `protobuf:"bytes,13,opt,name=alias" json:"alias,omitempty"`
-	LBStrategy   map[string]string  `protobuf:"bytes,14,rep,name=LBStrategy" json:"LBStrategy,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	ModTimestamp string             `protobuf:"bytes,15,opt,name=modTimestamp" json:"modTimestamp,omitempty"`
+	LBStrategy   map[string]string  `protobuf:"bytes,14,rep,name=LBStrategy" json:"LBStrategy,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value" bson:"lb_strategy"`
+	ModTimestamp string             `protobuf:"bytes,15,opt,name=modTimestamp" json:"modTimestamp,omitempty" bson:"mod_timestamp"`
 	Environment  string             `protobuf:"bytes,16,opt,name=environment" json:"environment,omitempty" bson:"env"`
-	RegisterBy   string             `protobuf:"bytes,17,opt,name=registerBy" json:"registerBy,omitempty"`
+	RegisterBy   string             `protobuf:"bytes,17,opt,name=registerBy" json:"registerBy,omitempty" bson:"register_by"`
 	Framework    *FrameWorkProperty `protobuf:"bytes,18,opt,name=framework" json:"framework,omitempty"`
 }
 
