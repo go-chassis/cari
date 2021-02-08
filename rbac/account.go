@@ -29,8 +29,8 @@ type Account struct {
 	//Deprecated
 	Role                string   `json:"role,omitempty"`
 	Roles               []string `json:"roles,omitempty"`
-	TokenExpirationTime string   `json:"tokenExpirationTime,omitempty"`
-	CurrentPassword     string   `json:"currentPassword,omitempty"`
+	TokenExpirationTime string   `json:"tokenExpirationTime,omitempty" bson:"token_expiration_time"`
+	CurrentPassword     string   `json:"currentPassword,omitempty" bson:"current_password"`
 	Status              string   `json:"status,omitempty"`
 }
 

@@ -108,9 +108,9 @@ type GetServicesInfoResponse struct {
 type MicroServiceKey struct {
 	// Tenant: The format is "{domain}/{project}"
 	Tenant      string `protobuf:"bytes,1,opt,name=tenant" json:"tenant,omitempty"`
-	Environment string `protobuf:"bytes,2,opt,name=environment" json:"environment,omitempty"`
-	AppId       string `protobuf:"bytes,3,opt,name=appId" json:"appId,omitempty"`
-	ServiceName string `protobuf:"bytes,4,opt,name=serviceName" json:"serviceName,omitempty"`
+	Environment string `protobuf:"bytes,2,opt,name=environment" json:"environment,omitempty" bson:"env"`
+	AppId       string `protobuf:"bytes,3,opt,name=appId" json:"appId,omitempty" bson:"app"`
+	ServiceName string `protobuf:"bytes,4,opt,name=serviceName" json:"serviceName,omitempty" bson:"service_name"`
 	Alias       string `protobuf:"bytes,5,opt,name=alias" json:"alias,omitempty"`
 	Version     string `protobuf:"bytes,6,opt,name=version" json:"version,omitempty"`
 }
@@ -125,13 +125,13 @@ type FrameWorkProperty struct {
 }
 
 type ServiceRule struct {
-	RuleId       string `protobuf:"bytes,1,opt,name=ruleId" json:"ruleId,omitempty"`
-	RuleType     string `protobuf:"bytes,2,opt,name=ruleType" json:"ruleType,omitempty"`
+	RuleId       string `protobuf:"bytes,1,opt,name=ruleId" json:"ruleId,omitempty" bson:"rule_id"`
+	RuleType     string `protobuf:"bytes,2,opt,name=ruleType" json:"ruleType,omitempty" bson:"rule_type"`
 	Attribute    string `protobuf:"bytes,3,opt,name=attribute" json:"attribute,omitempty"`
 	Pattern      string `protobuf:"bytes,4,opt,name=pattern" json:"pattern,omitempty"`
 	Description  string `protobuf:"bytes,5,opt,name=description" json:"description,omitempty"`
 	Timestamp    string `protobuf:"bytes,6,opt,name=timestamp" json:"timestamp,omitempty"`
-	ModTimestamp string `protobuf:"bytes,7,opt,name=modTimestamp" json:"modTimestamp,omitempty"`
+	ModTimestamp string `protobuf:"bytes,7,opt,name=modTimestamp" json:"modTimestamp,omitempty" bson:"mod_timestamp"`
 }
 
 type AddOrUpdateServiceRule struct {
@@ -330,7 +330,7 @@ type HealthCheck struct {
 type DataCenterInfo struct {
 	Name          string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
 	Region        string `protobuf:"bytes,2,opt,name=region" json:"region,omitempty"`
-	AvailableZone string `protobuf:"bytes,3,opt,name=availableZone" json:"availableZone,omitempty"`
+	AvailableZone string `protobuf:"bytes,3,opt,name=availableZone" json:"availableZone,omitempty" bson:"az"`
 }
 
 type MicroServiceInstanceKey struct {

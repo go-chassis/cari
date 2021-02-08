@@ -18,16 +18,16 @@
 package discovery
 
 type MicroServiceInstance struct {
-	InstanceId     string            `protobuf:"bytes,1,opt,name=instanceId" json:"instanceId,omitempty"`
-	ServiceId      string            `protobuf:"bytes,2,opt,name=serviceId" json:"serviceId,omitempty"`
+	InstanceId     string            `protobuf:"bytes,1,opt,name=instanceId" json:"instanceId,omitempty" bson:"instance_id"`
+	ServiceId      string            `protobuf:"bytes,2,opt,name=serviceId" json:"serviceId,omitempty" bson:"service_id"`
 	Endpoints      []string          `protobuf:"bytes,3,rep,name=endpoints" json:"endpoints,omitempty"`
 	HostName       string            `protobuf:"bytes,4,opt,name=hostName" json:"hostName,omitempty"`
 	Status         string            `protobuf:"bytes,5,opt,name=status" json:"status,omitempty"`
 	Properties     map[string]string `protobuf:"bytes,6,rep,name=properties" json:"properties,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	HealthCheck    *HealthCheck      `protobuf:"bytes,7,opt,name=healthCheck" json:"healthCheck,omitempty"`
+	HealthCheck    *HealthCheck      `protobuf:"bytes,7,opt,name=healthCheck" json:"healthCheck,omitempty" bson:"health_check"`
 	Timestamp      string            `protobuf:"bytes,8,opt,name=timestamp" json:"timestamp,omitempty"`
-	DataCenterInfo *DataCenterInfo   `protobuf:"bytes,9,opt,name=dataCenterInfo" json:"dataCenterInfo,omitempty"`
-	ModTimestamp   string            `protobuf:"bytes,10,opt,name=modTimestamp" json:"modTimestamp,omitempty"`
+	DataCenterInfo *DataCenterInfo   `protobuf:"bytes,9,opt,name=dataCenterInfo" json:"dataCenterInfo,omitempty" bson:"data_center_info"`
+	ModTimestamp   string            `protobuf:"bytes,10,opt,name=modTimestamp" json:"modTimestamp,omitempty" bson:"mod_timestamp"`
 	Version        string            `protobuf:"bytes,11,opt,name=version" json:"version,omitempty"`
 }
 type RegisterInstanceRequest struct {

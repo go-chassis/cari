@@ -23,7 +23,7 @@ type ModifySchemasRequest struct {
 }
 
 type Schema struct {
-	SchemaId string `protobuf:"bytes,1,opt,name=schemaId" json:"schemaId,omitempty"`
+	SchemaId string `protobuf:"bytes,1,opt,name=schemaId" json:"schemaId,omitempty" bson:"schema_id"`
 	Summary  string `protobuf:"bytes,2,opt,name=summary" json:"summary,omitempty"`
 	Schema   string `protobuf:"bytes,3,opt,name=schema" json:"schema,omitempty"`
 }
