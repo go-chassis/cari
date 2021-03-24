@@ -105,6 +105,11 @@ type GetServicesInfoResponse struct {
 	Statistics        *Statistics      `protobuf:"bytes,3,opt,name=statistics" json:"statistics,omitempty"`
 }
 
+type GetServicesInfoStatisticsResponse struct {
+   Response          *Response        `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+   Statistics        *Statistics      `protobuf:"bytes,2,opt,name=" json:"statistics,omitempty"`
+}
+
 type MicroServiceKey struct {
 	// Tenant: The format is "{domain}/{project}"
 	Tenant      string `protobuf:"bytes,1,opt,name=tenant" json:"tenant,omitempty"`
