@@ -17,33 +17,40 @@
 
 package rbac
 
-import "strings"
+import (
+	"strings"
+	"sync"
+)
 
 //as a user of a backend service, he only understands resource of this service,
 //to decouple authorization code from business code,
 //a middleware should handle all the authorization logic, and this middleware only understand rest API,
 //a resource mapping helps to maintain relations between api and resource.
-var resourceMap = map[string]string{}
+var resourceMap = sync.Map{}
 
 //PartialMap saves api partial matching
 var PartialMap = map[string]string{}
 
-func GetResource(api string) string {
-	r, ok := resourceMap[api]
+// GetResource try to find resource by API path, it has preheat mechanism after program start up
+// an API pattern is like /resource/:id/, not /resource/100
+// MUST not pass exact resource id to this API, otherwise you are facing massive memory footprint
+func GetResource(apiPattern string) string {
+	r, ok := resourceMap.Load(apiPattern)
 	if ok {
-		return r
+		return r.(string)
 	}
 	for partialAPI, resource := range PartialMap {
-		if strings.Contains(api, partialAPI) {
+		if strings.Contains(apiPattern, partialAPI) {
+			resourceMap.Store(apiPattern, resource)
 			return resource
 		}
 	}
-	return resourceMap["*"]
+	return ""
 }
 
 // MapResource saves the mapping from api to resource, it must be exactly match
 func MapResource(api, resource string) {
-	resourceMap[api] = resource
+	resourceMap.Store(api, resource)
 }
 
 // PartialMapResource saves the mapping from api to resource, it is partial match
