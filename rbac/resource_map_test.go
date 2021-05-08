@@ -38,4 +38,9 @@ func TestGetResource(t *testing.T) {
 		res := rbac.GetResource("/v1/a/1")
 		assert.Empty(t, res)
 	})
+	t.Run("given partial string and resource mapping,return right resource", func(t *testing.T) {
+		rbac.PartialMapResource("part", "partRes")
+		res := rbac.GetResource("/part/service/some")
+		assert.Equal(t, "partRes", res)
+	})
 }

@@ -17,21 +17,36 @@
 
 package rbac
 
-//as a user, he only understand resource of this system,
-//but to decouple authorization code from business code,
+import "strings"
+
+//as a user of a backend service, he only understands resource of this service,
+//to decouple authorization code from business code,
 //a middleware should handle all the authorization logic, and this middleware only understand rest API,
 //a resource mapping helps to maintain relations between api and resource.
 var resourceMap = map[string]string{}
 
+//PartialMap saves api partial matching
+var PartialMap = map[string]string{}
+
 func GetResource(api string) string {
 	r, ok := resourceMap[api]
-	if !ok {
-		return resourceMap["*"]
+	if ok {
+		return r
 	}
-	return r
+	for partialAPI, resource := range PartialMap {
+		if strings.Contains(api, partialAPI) {
+			return resource
+		}
+	}
+	return resourceMap["*"]
 }
 
-// MapResource save the mapping from api to resource
+// MapResource saves the mapping from api to resource, it must be exactly match
 func MapResource(api, resource string) {
 	resourceMap[api] = resource
+}
+
+// PartialMapResource saves the mapping from api to resource, it is partial match
+func PartialMapResource(api, resource string) {
+	PartialMap[api] = resource
 }
