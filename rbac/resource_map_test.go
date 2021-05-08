@@ -29,18 +29,21 @@ func TestGetResource(t *testing.T) {
 		assert.Empty(t, res)
 	})
 	t.Run("add api and resource mapping,return resource", func(t *testing.T) {
-		rbac.MapResource("/v1/order/1", "order")
-		res := rbac.GetResource("/v1/order/1")
+		rbac.MapResource("/v1/order/:id", "order")
+		res := rbac.GetResource("/v1/order/:id")
 		assert.NotEmpty(t, res)
 	})
 	t.Run("add api and resource mapping,return empty resource", func(t *testing.T) {
-		rbac.MapResource("/v1/item/1", "order")
-		res := rbac.GetResource("/v1/a/1")
+		rbac.MapResource("/v1/item/:id", "order")
+		res := rbac.GetResource("/v1/a/:id")
 		assert.Empty(t, res)
 	})
 	t.Run("given partial string and resource mapping,return right resource", func(t *testing.T) {
-		rbac.PartialMapResource("part", "partRes")
-		res := rbac.GetResource("/part/service/some")
+		rbac.PartialMapResource("part/:id", "partRes")
+		res := rbac.GetResource("/v1/part/:id")
+		assert.Equal(t, "partRes", res)
+		t.Log("get from resource map")
+		res = rbac.GetResource("/v1/part/:id")
 		assert.Equal(t, "partRes", res)
 	})
 }
