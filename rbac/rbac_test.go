@@ -28,19 +28,19 @@ import (
 func TestFromContext(t *testing.T) {
 	ctx := rbac.NewContext(context.TODO(), map[string]interface{}{
 		rbac.ClaimsUser:  "root",
-		rbac.ClaimsRoles: []interface{}{},
+		rbac.ClaimsRoles: []interface{}{"admin"},
 	})
 
 	claims, _ := rbac.FromContext(ctx)
 	u := claims[rbac.ClaimsUser]
 	r := claims[rbac.ClaimsRoles]
 	assert.Equal(t, "root", u)
-	assert.Equal(t, []interface{}{}, r)
+	assert.Equal(t, []interface{}{"admin"}, r)
 
 	a, err := rbac.AccountFromContext(ctx)
 	assert.NoError(t, err)
 	assert.Equal(t, "root", a.Name)
-	assert.Equal(t, []string{}, a.Roles)
+	assert.Equal(t, []string{"admin"}, a.Roles)
 }
 
 func TestMustAuth(t *testing.T) {

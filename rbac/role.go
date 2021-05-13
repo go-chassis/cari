@@ -28,6 +28,10 @@ type Role struct {
 }
 
 type Permission struct {
-	Resources []string `json:"resources,omitempty"`
-	Verbs     []string `json:"verbs,omitempty"`
+	Resources []*Resource `json:"resources,omitempty"`
+	Verbs     []string    `json:"verbs,omitempty"`
+}
+type Resource struct {
+	Type   string            `json:"type,omitempty"`
+	Labels map[string]string `json:"labels,omitempty"`
 }
