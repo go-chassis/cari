@@ -41,7 +41,7 @@ func AccountFromContext(ctx context.Context) (*Account, error) {
 		return nil, ErrConvert
 	}
 	roles := m[ClaimsRoles]
-	roleList, err := GetRolesList(roles)
+	roleList, err := getRolesList(roles)
 	if err != nil {
 		return nil, ErrConvert
 	}
@@ -50,21 +50,20 @@ func AccountFromContext(ctx context.Context) (*Account, error) {
 }
 
 // RoleFromContext only return role name
-func RoleFromContext(ctx context.Context) (string, error) {
+func RolesFromContext(ctx context.Context) ([]string, error) {
 	m, err := FromContext(ctx)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	roleI := m[ClaimsRoles]
-	role, ok := roleI.(string)
-	if !ok {
-		return "", ErrConvert
+	roles := m[ClaimsRoles]
+	roleList, err := getRolesList(roles)
+	if err != nil {
+		return nil, ErrConvert
 	}
-	return role, nil
+	return roleList, nil
 }
 
-// GetRolesList return role list string
-func GetRolesList(v interface{}) ([]string, error) {
+func getRolesList(v interface{}) ([]string, error) {
 	s, ok := v.([]interface{})
 	if !ok {
 		return nil, ErrConvert

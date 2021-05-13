@@ -32,8 +32,8 @@ var resourceMap = sync.Map{}
 var PartialMap = map[string]string{}
 
 // GetResource try to find resource by API path, it has preheat mechanism after program start up
-// an API pattern is like /resource/:id/, not /resource/100
-// MUST not pass exact resource id to this API, otherwise you are facing massive memory footprint
+// an API pattern is like /resource/:id/, /resource/{id}/,
+// MUST NOT pass exact resource id to this API like /resource/100, otherwise you are facing massive memory footprint
 func GetResource(apiPattern string) string {
 	r, ok := resourceMap.Load(apiPattern)
 	if ok {
