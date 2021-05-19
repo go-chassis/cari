@@ -15,40 +15,44 @@
  * limitations under the License.
  */
 
-package rbac
+package errsvc
 
 import (
-	"errors"
-	"github.com/go-chassis/cari/pkg/errsvc"
+	"fmt"
 )
 
-var (
-	ErrInvalidHeader = errors.New("invalid auth header")
-	ErrNoHeader      = errors.New("should provide Authorization header")
-	ErrInvalidCtx    = errors.New("invalid context")
-	ErrConvert       = errors.New("type convert error")
-	MsgConvertErr    = "type convert error"
-	ErrConvertErr    = errors.New(MsgConvertErr)
-)
+const initialSize = 50
 
-var errorsMap = map[int32]string{
-	// TODO...
+type Manager struct {
+	errorsMap map[int32]string
 }
 
-var errManager = errsvc.NewManager()
-
-func init() {
-	MustRegisterErrs(errorsMap)
+func (m *Manager) MustRegisterMap(errs map[int32]string) {
+	for code, msg := range errs {
+		m.MustRegister(code, msg)
+	}
 }
 
-func MustRegisterErrs(errs map[int32]string) {
-	errManager.MustRegisterMap(errs)
+func (m *Manager) MustRegister(code int32, message string) {
+	if code < 400000 || code >= 600000 {
+		panic(fmt.Errorf("error code[%v] should be between 4xx and 5xx", code))
+	}
+	if _, exist := m.errorsMap[code]; exist {
+		panic(fmt.Errorf("register duplicated error[%v]", code))
+	}
+	m.errorsMap[code] = message
 }
 
-func MustRegisterErr(code int32, message string) {
-	errManager.MustRegister(code, message)
+func (m *Manager) NewError(code int32, detail string) *Error {
+	return &Error{
+		Code:    code,
+		Message: m.errorsMap[code],
+		Detail:  detail,
+	}
 }
 
-func NewError(code int32, detail string) *errsvc.Error {
-	return errManager.NewError(code, detail)
+func NewManager() *Manager {
+	return &Manager{
+		errorsMap: make(map[int32]string, initialSize),
+	}
 }

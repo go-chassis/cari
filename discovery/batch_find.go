@@ -15,6 +15,8 @@
 
 package discovery
 
+import "github.com/go-chassis/cari/pkg/errsvc"
+
 type FindService struct {
 	Service *MicroServiceKey `protobuf:"bytes,1,opt,name=service" json:"service"`
 	Rev     string           `protobuf:"bytes,2,opt,name=rev" json:"rev,omitempty"`
@@ -32,8 +34,8 @@ type FindResult struct {
 }
 
 type FindFailedResult struct {
-	Indexes []int64 `protobuf:"varint,1,rep,packed,name=indexes" json:"indexes"`
-	Error   *Error  `protobuf:"bytes,2,opt,name=error" json:"error"`
+	Indexes []int64       `protobuf:"varint,1,rep,packed,name=indexes" json:"indexes"`
+	Error   *errsvc.Error `protobuf:"bytes,2,opt,name=error" json:"error"`
 }
 
 type BatchFindResult struct {

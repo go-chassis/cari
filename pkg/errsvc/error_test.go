@@ -14,41 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package rbac
+package errsvc_test
 
 import (
-	"errors"
 	"github.com/go-chassis/cari/pkg/errsvc"
+	"github.com/stretchr/testify/assert"
+	"net/http"
+	"testing"
 )
 
-var (
-	ErrInvalidHeader = errors.New("invalid auth header")
-	ErrNoHeader      = errors.New("should provide Authorization header")
-	ErrInvalidCtx    = errors.New("invalid context")
-	ErrConvert       = errors.New("type convert error")
-	MsgConvertErr    = "type convert error"
-	ErrConvertErr    = errors.New(MsgConvertErr)
-)
-
-var errorsMap = map[int32]string{
-	// TODO...
-}
-
-var errManager = errsvc.NewManager()
-
-func init() {
-	MustRegisterErrs(errorsMap)
-}
-
-func MustRegisterErrs(errs map[int32]string) {
-	errManager.MustRegisterMap(errs)
-}
-
-func MustRegisterErr(code int32, message string) {
-	errManager.MustRegister(code, message)
-}
-
-func NewError(code int32, detail string) *errsvc.Error {
-	return errManager.NewError(code, detail)
+func TestError_StatusCode(t *testing.T) {
+	t.Run("internall error should return true", func(t *testing.T) {
+		e := errsvc.Error{Code: 503999}
+		assert.Equal(t, http.StatusServiceUnavailable, e.StatusCode())
+		assert.True(t, e.InternalError())
+	})
 }

@@ -14,41 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package rbac
+package errsvc_test
 
 import (
-	"errors"
 	"github.com/go-chassis/cari/pkg/errsvc"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
-var (
-	ErrInvalidHeader = errors.New("invalid auth header")
-	ErrNoHeader      = errors.New("should provide Authorization header")
-	ErrInvalidCtx    = errors.New("invalid context")
-	ErrConvert       = errors.New("type convert error")
-	MsgConvertErr    = "type convert error"
-	ErrConvertErr    = errors.New(MsgConvertErr)
-)
+func TestRegisterErrors(t *testing.T) {
+	mgr := errsvc.NewManager()
 
-var errorsMap = map[int32]string{
-	// TODO...
-}
+	t.Run("register map should pass", func(t *testing.T) {
+		mgr.MustRegisterMap(map[int32]string{503999: "test1", 403999: "none"})
 
-var errManager = errsvc.NewManager()
+		e := mgr.NewError(503999, "test2")
+		assert.Equal(t, "test1", e.Message)
+	})
 
-func init() {
-	MustRegisterErrs(errorsMap)
-}
+	t.Run("register map again should panic", func(t *testing.T) {
+		defer func() {
+			assert.NotNil(t, recover())
+		}()
+		mgr.MustRegisterMap(map[int32]string{503999: "test1"})
+	})
 
-func MustRegisterErrs(errs map[int32]string) {
-	errManager.MustRegisterMap(errs)
-}
-
-func MustRegisterErr(code int32, message string) {
-	errManager.MustRegister(code, message)
-}
-
-func NewError(code int32, detail string) *errsvc.Error {
-	return errManager.NewError(code, detail)
+	t.Run("register < 400 should panic", func(t *testing.T) {
+		defer func() {
+			assert.NotNil(t, recover())
+		}()
+		mgr.MustRegisterMap(map[int32]string{1: "test1"})
+	})
 }
