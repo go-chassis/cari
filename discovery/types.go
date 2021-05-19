@@ -97,6 +97,7 @@ type GetServicesInfoRequest struct {
 	ServiceName string   `protobuf:"bytes,3,opt,name=serviceName" json:"serviceName,omitempty"`
 	CountOnly   bool     `protobuf:"varint,4,opt,name=countOnly" json:"countOnly,omitempty"`
 	WithShared  bool     `protobuf:"varint,5,opt,name=withShared" json:"withShared,omitempty"`
+	Environment string   `protobuf:"bytes,6,opt,name=environment" json:"environment,omitempty"`
 }
 
 type GetServicesInfoResponse struct {
@@ -106,8 +107,8 @@ type GetServicesInfoResponse struct {
 }
 
 type GetServicesInfoStatisticsResponse struct {
-   Response          *Response        `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
-   Statistics        *Statistics      `protobuf:"bytes,2,opt,name=" json:"statistics,omitempty"`
+	Response   *Response   `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Statistics *Statistics `protobuf:"bytes,2,opt,name=" json:"statistics,omitempty"`
 }
 
 type MicroServiceKey struct {
