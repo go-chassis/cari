@@ -49,7 +49,7 @@ type BatchFindInstancesRequest struct {
 }
 
 type BatchFindInstancesResponse struct {
-	Response  *Response        `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response  *Response        `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Services  *BatchFindResult `protobuf:"bytes,2,rep,name=services" json:"services,omitempty"`
 	Instances *BatchFindResult `protobuf:"bytes,3,rep,name=instances" json:"instances,omitempty"`
 }

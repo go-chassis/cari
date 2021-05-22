@@ -43,7 +43,7 @@ type FindInstancesRequest struct {
 	Alias             string   `protobuf:"bytes,7,opt,name=alias" json:"alias,omitempty"`
 }
 type FindInstancesResponse struct {
-	Response  *Response               `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response  *Response               `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Instances []*MicroServiceInstance `protobuf:"bytes,2,rep,name=instances" json:"instances,omitempty"`
 }
 
@@ -54,7 +54,7 @@ type GetOneInstanceRequest struct {
 	Tags               []string `protobuf:"bytes,4,rep,name=tags" json:"tags,omitempty"`
 }
 type GetOneInstanceResponse struct {
-	Response *Response             `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response             `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Instance *MicroServiceInstance `protobuf:"bytes,2,opt,name=instance" json:"instance,omitempty"`
 }
 type GetInstancesRequest struct {
@@ -64,7 +64,7 @@ type GetInstancesRequest struct {
 }
 
 type GetInstancesResponse struct {
-	Response  *Response               `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response  *Response               `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Instances []*MicroServiceInstance `protobuf:"bytes,2,rep,name=instances" json:"instances,omitempty"`
 }
 
@@ -79,7 +79,7 @@ type UpdateInstanceStatusRequest struct {
 }
 
 type RegisterInstanceResponse struct {
-	Response   *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response   *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 	InstanceId string    `protobuf:"bytes,2,opt,name=instanceId" json:"instanceId,omitempty"`
 }
 
@@ -89,7 +89,7 @@ type UnregisterInstanceRequest struct {
 }
 
 type UnregisterInstanceResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 }
 
 type HeartbeatRequest struct {
@@ -98,11 +98,11 @@ type HeartbeatRequest struct {
 }
 
 type HeartbeatResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 }
 
 type UpdateInstanceStatusResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 }
 
 type UpdateInstancePropsRequest struct {
@@ -112,13 +112,13 @@ type UpdateInstancePropsRequest struct {
 }
 
 type UpdateInstancePropsResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 }
 
 type GetAllInstancesRequest struct {
 }
 
 type GetAllInstancesResponse struct {
-	Response  *Response               `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response  *Response               `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Instances []*MicroServiceInstance `protobuf:"bytes,2,rep,name=instances" json:"instances,omitempty"`
 }
