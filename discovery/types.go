@@ -61,7 +61,7 @@ type HeartbeatSetElement struct {
 }
 
 type HeartbeatSetResponse struct {
-	Response  *Response        `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response  *Response        `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Instances []*InstanceHbRst `protobuf:"bytes,2,rep,name=instances" json:"instances,omitempty"`
 }
 
@@ -101,13 +101,13 @@ type GetServicesInfoRequest struct {
 }
 
 type GetServicesInfoResponse struct {
-	Response          *Response        `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response          *Response        `protobuf:"bytes,1,opt,name=response" json:"-"`
 	AllServicesDetail []*ServiceDetail `protobuf:"bytes,2,rep,name=allServicesDetail" json:"allServicesDetail,omitempty"`
 	Statistics        *Statistics      `protobuf:"bytes,3,opt,name=statistics" json:"statistics,omitempty"`
 }
 
 type GetServicesInfoStatisticsResponse struct {
-	Response   *Response   `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response   *Response   `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Statistics *Statistics `protobuf:"bytes,2,opt,name=" json:"statistics,omitempty"`
 }
 
@@ -185,12 +185,12 @@ type GetExistenceRequest struct {
 }
 
 type GetExistenceByIDResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Exist    bool      `protobuf:"bytes,2,opt,name=exist" json:"exist,omitempty"`
 }
 
 type GetExistenceResponse struct {
-	Response  *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response  *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 	ServiceId string    `protobuf:"bytes,2,opt,name=serviceId" json:"serviceId,omitempty"`
 	SchemaId  string    `protobuf:"bytes,3,opt,name=schemaId" json:"schemaId,omitempty"`
 	Summary   string    `protobuf:"bytes,4,opt,name=summary" json:"summary,omitempty"`
@@ -211,7 +211,7 @@ type CreateServiceRequest struct {
 }
 
 type CreateServiceResponse struct {
-	Response  *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response  *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 	ServiceId string    `protobuf:"bytes,2,opt,name=serviceId" json:"serviceId,omitempty"`
 }
 
@@ -221,7 +221,7 @@ type DeleteServiceRequest struct {
 }
 
 type DeleteServiceResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 }
 
 type GetServiceRequest struct {
@@ -229,7 +229,7 @@ type GetServiceRequest struct {
 }
 
 type GetServiceResponse struct {
-	Response *Response     `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response     `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Service  *MicroService `protobuf:"bytes,2,opt,name=service" json:"service,omitempty"`
 }
 
@@ -237,7 +237,7 @@ type GetServicesRequest struct {
 }
 
 type GetServicesResponse struct {
-	Response *Response       `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response       `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Services []*MicroService `protobuf:"bytes,2,rep,name=services" json:"services,omitempty"`
 }
 
@@ -247,7 +247,7 @@ type UpdateServicePropsRequest struct {
 }
 
 type UpdateServicePropsResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 }
 
 type GetServiceRulesRequest struct {
@@ -255,7 +255,7 @@ type GetServiceRulesRequest struct {
 }
 
 type GetServiceRulesResponse struct {
-	Response *Response      `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response      `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Rules    []*ServiceRule `protobuf:"bytes,2,rep,name=rules" json:"rules,omitempty"`
 }
 
@@ -266,7 +266,7 @@ type UpdateServiceRuleRequest struct {
 }
 
 type UpdateServiceRuleResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 }
 
 type AddServiceRulesRequest struct {
@@ -275,7 +275,7 @@ type AddServiceRulesRequest struct {
 }
 
 type AddServiceRulesResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 	RuleIds  []string  `protobuf:"bytes,2,rep,name=RuleIds" json:"RuleIds,omitempty"`
 }
 
@@ -285,7 +285,7 @@ type DeleteServiceRulesRequest struct {
 }
 
 type DeleteServiceRulesResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 }
 
 type GetServiceTagsRequest struct {
@@ -293,7 +293,7 @@ type GetServiceTagsRequest struct {
 }
 
 type GetServiceTagsResponse struct {
-	Response *Response         `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response         `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Tags     map[string]string `protobuf:"bytes,2,rep,name=tags" json:"tags,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 }
 
@@ -304,7 +304,7 @@ type UpdateServiceTagRequest struct {
 }
 
 type UpdateServiceTagResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 }
 
 type AddServiceTagsRequest struct {
@@ -313,7 +313,7 @@ type AddServiceTagsRequest struct {
 }
 
 type AddServiceTagsResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 }
 
 type DeleteServiceTagsRequest struct {
@@ -322,7 +322,7 @@ type DeleteServiceTagsRequest struct {
 }
 
 type DeleteServiceTagsResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 }
 
 type HealthCheck struct {
@@ -349,7 +349,7 @@ type WatchInstanceRequest struct {
 }
 
 type WatchInstanceResponse struct {
-	Response *Response             `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response             `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Action   string                `protobuf:"bytes,2,opt,name=action" json:"action,omitempty"`
 	Key      *MicroServiceKey      `protobuf:"bytes,3,opt,name=key" json:"key,omitempty"`
 	Instance *MicroServiceInstance `protobuf:"bytes,4,opt,name=instance" json:"instance,omitempty"`
@@ -360,7 +360,7 @@ type AddDependenciesRequest struct {
 }
 
 type AddDependenciesResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 }
 
 type CreateDependenciesRequest struct {
@@ -378,7 +378,7 @@ func (cd *ConsumerDependency) String() string {
 }
 
 type CreateDependenciesResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 }
 
 type GetDependenciesRequest struct {
@@ -388,12 +388,12 @@ type GetDependenciesRequest struct {
 }
 
 type GetConDependenciesResponse struct {
-	Response  *Response       `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response  *Response       `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Providers []*MicroService `protobuf:"bytes,2,rep,name=providers" json:"providers,omitempty"`
 }
 
 type GetProDependenciesResponse struct {
-	Response  *Response       `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response  *Response       `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Consumers []*MicroService `protobuf:"bytes,2,rep,name=consumers" json:"consumers,omitempty"`
 }
 
@@ -412,7 +412,7 @@ type ServiceDetail struct {
 
 // 服务详情返回信息
 type GetServiceDetailResponse struct {
-	Response *Response      `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response      `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Service  *ServiceDetail `protobuf:"bytes,2,opt,name=service" json:"service,omitempty"`
 }
 
@@ -424,7 +424,7 @@ type DelServicesRspInfo struct {
 
 // 删除服务响应
 type DelServicesResponse struct {
-	Response *Response             `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response             `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Services []*DelServicesRspInfo `protobuf:"bytes,2,rep,name=services" json:"services,omitempty"`
 }
 
@@ -434,7 +434,7 @@ type GetAppsRequest struct {
 }
 
 type GetAppsResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 	AppIds   []string  `protobuf:"bytes,2,rep,name=appIds" json:"appIds,omitempty"`
 }
 type MicroServiceDependency struct {
@@ -450,6 +450,6 @@ type GetServiceCountRequest struct {
 	Project string `protobuf:"bytes,2,opt,name=project" json:"project,omitempty"`
 }
 type GetServiceCountResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Count    int64     `protobuf:"varint,2,opt,name=count" json:"count,omitempty"`
 }

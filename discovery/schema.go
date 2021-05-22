@@ -29,7 +29,7 @@ type Schema struct {
 }
 
 type ModifySchemasResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 }
 type ModifySchemaRequest struct {
 	ServiceId string `protobuf:"bytes,1,opt,name=serviceId" json:"serviceId,omitempty"`
@@ -38,7 +38,7 @@ type ModifySchemaRequest struct {
 	Summary   string `protobuf:"bytes,4,opt,name=summary" json:"summary,omitempty"`
 }
 type ModifySchemaResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 }
 
 type GetSchemaRequest struct {
@@ -52,13 +52,13 @@ type GetAllSchemaRequest struct {
 }
 
 type GetSchemaResponse struct {
-	Response      *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response      *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Schema        string    `protobuf:"bytes,2,opt,name=schema" json:"schema,omitempty"`
 	SchemaSummary string    `protobuf:"bytes,3,opt,name=schemaSummary" json:"schemaSummary,omitempty"`
 }
 
 type GetAllSchemaResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 	Schemas  []*Schema `protobuf:"bytes,2,rep,name=schemas" json:"schemas,omitempty"`
 }
 
@@ -68,5 +68,5 @@ type DeleteSchemaRequest struct {
 }
 
 type DeleteSchemaResponse struct {
-	Response *Response `protobuf:"bytes,1,opt,name=response" json:"response,omitempty"`
+	Response *Response `protobuf:"bytes,1,opt,name=response" json:"-"`
 }
