@@ -18,13 +18,16 @@
 package rbac
 
 type RoleResponse struct {
+	Total int64   `json:"total,omitempty"`
 	Roles []*Role `json:"data,omitempty"`
 }
 
 type Role struct {
-	ID    string        `json:"id,omitempty"`
-	Name  string        `json:"name,omitempty"`
-	Perms []*Permission `json:"perms,omitempty"`
+	ID         string        `json:"id,omitempty"`
+	Name       string        `json:"name,omitempty"`
+	Perms      []*Permission `json:"perms,omitempty"`
+	CreateTime string        `json:"createTime,omitempty"`
+	UpdateTime string        `json:"updateTime,omitempty"`
 }
 
 type Permission struct {
