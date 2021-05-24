@@ -18,7 +18,7 @@
 package rbac
 
 type AccountResponse struct {
-	Total    int64      `json:"total"`
+	Total    int64      `json:"total,omitempty"`
 	Accounts []*Account `json:"data,omitempty"`
 }
 
@@ -32,6 +32,8 @@ type Account struct {
 	TokenExpirationTime string   `json:"tokenExpirationTime,omitempty" bson:"token_expiration_time"`
 	CurrentPassword     string   `json:"currentPassword,omitempty" bson:"current_password"`
 	Status              string   `json:"status,omitempty"`
+	CreateTime          string   `json:"createTime,omitempty"`
+	UpdateTime          string   `json:"updateTime,omitempty"`
 }
 
 type Token struct {
