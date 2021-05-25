@@ -19,8 +19,9 @@ package rbac_test
 
 import (
 	"context"
-	"github.com/go-chassis/cari/rbac"
 	"testing"
+
+	"github.com/go-chassis/cari/rbac"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -53,4 +54,29 @@ func TestMustAuth(t *testing.T) {
 	assert.True(t, rbac.MustAuth("/v4/a/registry/version"))
 	assert.True(t, rbac.MustAuth("/health"))
 	assert.True(t, rbac.MustAuth("/v4/a/registry/health"))
+}
+
+func TestGetRoleList(t *testing.T) {
+	t.Run("auth new version token, should get role list", func(t *testing.T) {
+		newRole := "newRole"
+		claims := map[string]interface{}{
+			"roles": []interface{}{newRole},
+		}
+		roleList, err := rbac.GetRolesList(claims)
+		assert.NoError(t, err)
+		assert.Equal(t, 1, len(roleList))
+		assert.Equal(t, "newRole", roleList[0])
+	})
+
+	t.Run("auth old version token, should get role list", func(t *testing.T) {
+		// compatible to old version
+		oldRole := "oldRole"
+		claims := map[string]interface{}{
+			"role": oldRole,
+		}
+		roleList, err := rbac.GetRolesList(claims)
+		assert.NoError(t, err)
+		assert.Equal(t, 1, len(roleList))
+		assert.Equal(t, oldRole, roleList[0])
+	})
 }

@@ -26,4 +26,6 @@ var (
 	ErrNoHeader      = errors.New("should provide Authorization header")
 	ErrInvalidCtx    = errors.New("invalid context")
 	ErrConvert       = errors.New("type convert error")
+	MsgConvertErr    = "type convert error"
+	ErrConvertErr    = errors.New(MsgConvertErr)
 )
