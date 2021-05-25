@@ -46,10 +46,9 @@ func AccountFromContext(ctx context.Context) (*Account, error) {
 	if !ok {
 		return nil, ErrConvert
 	}
-	roles := m[ClaimsRoles]
-	roleList, err := getRolesList(roles)
+	roleList, err := GetRolesList(m)
 	if err != nil {
-		return nil, ErrConvert
+		return nil, err
 	}
 	account := &Account{Name: a, Roles: roleList}
 	return account, nil
@@ -61,12 +60,7 @@ func RolesFromContext(ctx context.Context) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	roles := m[ClaimsRoles]
-	roleList, err := getRolesList(roles)
-	if err != nil {
-		return nil, ErrConvert
-	}
-	return roleList, nil
+	return GetRolesList(m)
 }
 
 func getRolesList(v interface{}) ([]string, error) {
