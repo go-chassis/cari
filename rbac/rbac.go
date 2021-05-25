@@ -20,12 +20,18 @@ package rbac
 
 import (
 	"context"
+	"errors"
 	mapset "github.com/deckarep/golang-set"
 )
 
 const (
-	ClaimsUser  = "account"
+	ClaimsUser = "account"
+	//Deprecated
+	ClaimsRole  = "role"
 	ClaimsRoles = "roles"
+
+	RoleAdmin     = "admin"
+	RoleDeveloper = "developer"
 )
 
 var whiteAPIList = mapset.NewSet()
@@ -84,6 +90,39 @@ func Add2WhiteAPIList(path ...string) {
 		whiteAPIList.Add(p)
 	}
 }
+
 func MustAuth(pattern string) bool {
 	return !whiteAPIList.Contains(pattern)
+}
+
+func GetRolesList(m map[string]interface{}) ([]string, error) {
+	role, ok := m[ClaimsRole]
+	if ok {
+		r, ok := role.(string)
+		if !ok {
+			return nil, errors.New("convert role to string failed")
+		}
+		return []string{r}, nil
+	}
+
+	roles, ok := m[ClaimsRoles]
+	if !ok {
+		return nil, errors.New("token contains no valid roles")
+	}
+	roleList, err := getRolesList(roles)
+	if err != nil {
+		return nil, ErrConvertErr
+	}
+	return roleList, nil
+}
+
+//BuildResourceList join the resource to an array
+func BuildResourceList(resourceType ...string) []*Resource {
+	rt := make([]*Resource, len(resourceType))
+	for i := 0; i < len(resourceType); i++ {
+		rt[i] = &Resource{
+			Type: resourceType[i],
+		}
+	}
+	return rt
 }
