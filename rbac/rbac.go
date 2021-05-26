@@ -41,6 +41,10 @@ func AccountFromContext(ctx context.Context) (*Account, error) {
 	if err != nil {
 		return nil, err
 	}
+	return GetAccount(m)
+}
+
+func GetAccount(m map[string]interface{}) (*Account, error) {
 	accountNameI := m[ClaimsUser]
 	a, ok := accountNameI.(string)
 	if !ok {
