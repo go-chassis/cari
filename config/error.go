@@ -22,17 +22,25 @@ import (
 )
 
 const (
-	ErrHealthCheck     int32 = 400010
-	ErrListKVs         int32 = 400011
-	ErrRecordNotExists int32 = 400012
-	ErrGetPollingData  int32 = 400013
+	ErrInvalidParams       int32 = 400001
+	ErrHealthCheck         int32 = 400002
+	ErrObserveEvent        int32 = 400003
+	ErrRequiredRecordId    int32 = 403001
+	ErrRecordNotExists     int32 = 404001
+	ErrRecordAlreadyExists int32 = 409001
+	ErrNotEnoughQuota      int32 = 422001
+	ErrInternal            int32 = 500001
 )
 
 var errorsMap = map[int32]string{
-	ErrHealthCheck:     "Failed to check kie healthy",
-	ErrListKVs:         "Failed to list Key/value",
-	ErrRecordNotExists: "Micro-service version does not exist",
-	ErrGetPollingData:  "Failed to get polling data",
+	ErrInvalidParams:       "invalid parameter(s)",
+	ErrHealthCheck:         "failed to check kie healthy",
+	ErrRequiredRecordId:    "required record id",
+	ErrObserveEvent:        "failed to observe event",
+	ErrRecordNotExists:     "record does not exist",
+	ErrRecordAlreadyExists: "record already exist",
+	ErrNotEnoughQuota:      "quota is not enough",
+	ErrInternal:            "internal server error",
 }
 
 var errManager = errsvc.NewManager()
