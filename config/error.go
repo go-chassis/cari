@@ -15,24 +15,24 @@
  * limitations under the License.
  */
 
-package rbac
+package config
 
 import (
-	"errors"
 	"github.com/go-chassis/cari/pkg/errsvc"
 )
 
-var (
-	ErrInvalidHeader = errors.New("invalid auth header")
-	ErrNoHeader      = errors.New("should provide Authorization header")
-	ErrInvalidCtx    = errors.New("invalid context")
-	ErrConvert       = errors.New("type convert error")
-	MsgConvertErr    = "type convert error"
-	ErrConvertErr    = errors.New(MsgConvertErr)
+const (
+	ErrHealthCheck     int32 = 400010
+	ErrListKVs         int32 = 400011
+	ErrRecordNotExists int32 = 400012
+	ErrGetPollingData  int32 = 400013
 )
 
 var errorsMap = map[int32]string{
-	// TODO...
+	ErrHealthCheck:     "Failed to check kie healthy",
+	ErrListKVs:         "Failed to list Key/value",
+	ErrRecordNotExists: "Micro-service version does not exist",
+	ErrGetPollingData:  "Failed to get polling data",
 }
 
 var errManager = errsvc.NewManager()

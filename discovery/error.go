@@ -17,10 +17,7 @@
 
 package discovery
 
-import (
-	"encoding/json"
-	"fmt"
-)
+import "github.com/go-chassis/cari/pkg/errsvc"
 
 const (
 	ErrInvalidParams           int32 = 400001
@@ -84,49 +81,20 @@ var errorsMap = map[int32]string{
 	ErrConflictRole:            "role name is duplicated",
 }
 
-type Error struct {
-	Code    int32  `json:"errorCode,string"`
-	Message string `json:"errorMessage"`
-	Detail  string `json:"detail,omitempty"`
+var errManager = errsvc.NewManager()
+
+func init() {
+	MustRegisterErrs(errorsMap)
 }
 
-func (e *Error) Error() string {
-	if len(e.Detail) == 0 {
-		return e.Message
-	}
-	return e.Message + "(" + e.Detail + ")"
+func MustRegisterErrs(errs map[int32]string) {
+	errManager.MustRegisterMap(errs)
 }
 
-func (e *Error) Marshal() []byte {
-	bs, _ := json.Marshal(e)
-	return bs
+func MustRegisterErr(code int32, message string) {
+	errManager.MustRegister(code, message)
 }
 
-func (e *Error) StatusCode() int {
-	return int(e.Code / 1000)
-}
-
-func (e *Error) InternalError() bool {
-	return e.Code >= 500000
-}
-
-func NewError(code int32, detail string) *Error {
-	return &Error{
-		Code:    code,
-		Message: errorsMap[code],
-		Detail:  detail,
-	}
-}
-
-func NewErrorf(code int32, format string, args ...interface{}) *Error {
-	return NewError(code, fmt.Sprintf(format, args...))
-}
-func RegisterErrors(errs map[int32]string) {
-	for err, msg := range errs {
-		if err < 400000 || err >= 600000 {
-			fmt.Sprintf("error code[%v] should be between 4xx and 5xx\n", err)
-			continue
-		}
-		errorsMap[err] = msg
-	}
+func NewError(code int32, detail string) *errsvc.Error {
+	return errManager.NewError(code, detail)
 }

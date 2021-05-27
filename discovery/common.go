@@ -17,6 +17,8 @@
 
 package discovery
 
+import "github.com/go-chassis/cari/pkg/errsvc"
+
 const (
 	ExistenceMicroservice string = "microservice"
 	ExistenceSchema       string = "schema"
@@ -37,7 +39,7 @@ func CreateResponse(code int32, message string) *Response {
 	return resp
 }
 
-func CreateResponseWithSCErr(err *Error) *Response {
+func CreateResponseWithSCErr(err *errsvc.Error) *Response {
 	return &Response{
 		Code:    err.Code,
 		Message: err.Detail,

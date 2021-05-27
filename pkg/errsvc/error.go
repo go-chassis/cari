@@ -15,40 +15,30 @@
  * limitations under the License.
  */
 
-package rbac
+// err package define the register of business errors
+package errsvc
 
-import (
-	"errors"
-	"github.com/go-chassis/cari/pkg/errsvc"
-)
-
-var (
-	ErrInvalidHeader = errors.New("invalid auth header")
-	ErrNoHeader      = errors.New("should provide Authorization header")
-	ErrInvalidCtx    = errors.New("invalid context")
-	ErrConvert       = errors.New("type convert error")
-	MsgConvertErr    = "type convert error"
-	ErrConvertErr    = errors.New(MsgConvertErr)
-)
-
-var errorsMap = map[int32]string{
-	// TODO...
+type Error struct {
+	Code    int32  `json:"errorCode,string"`
+	Message string `json:"errorMessage"`
+	Detail  string `json:"detail,omitempty"`
 }
 
-var errManager = errsvc.NewManager()
-
-func init() {
-	MustRegisterErrs(errorsMap)
+func (e *Error) Error() string {
+	if len(e.Detail) == 0 {
+		return e.Message
+	}
+	return e.Message + "(" + e.Detail + ")"
 }
 
-func MustRegisterErrs(errs map[int32]string) {
-	errManager.MustRegisterMap(errs)
+func (e *Error) StatusCode() int {
+	sc := int(e.Code / 1000)
+	if sc == 0 {
+		return int(e.Code)
+	}
+	return sc
 }
 
-func MustRegisterErr(code int32, message string) {
-	errManager.MustRegister(code, message)
-}
-
-func NewError(code int32, detail string) *errsvc.Error {
-	return errManager.NewError(code, detail)
+func (e *Error) InternalError() bool {
+	return e.Code >= 500000
 }
