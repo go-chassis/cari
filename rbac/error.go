@@ -24,6 +24,7 @@ import (
 
 var (
 	ErrInvalidHeader = errors.New("invalid auth header")
+	ErrSameAsName    = errors.New("account name and password MUST NOT be same")
 	ErrNoHeader      = errors.New("should provide Authorization header")
 	ErrInvalidCtx    = errors.New("invalid context")
 	ErrConvert       = errors.New("type convert error")
