@@ -36,6 +36,13 @@ type Account struct {
 	UpdateTime          string   `json:"updateTime,omitempty"`
 }
 
+func (a *Account) Check() error {
+	if a.Name == a.Password {
+		return ErrSameAsName
+	}
+	return nil
+}
+
 type Token struct {
 	TokenStr string `json:"token,omitempty"`
 }
