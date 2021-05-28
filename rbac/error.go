@@ -23,13 +23,14 @@ import (
 )
 
 var (
-	ErrInvalidHeader = errors.New("invalid auth header")
-	ErrSameAsName    = errors.New("account name and password MUST NOT be same")
-	ErrNoHeader      = errors.New("should provide Authorization header")
-	ErrInvalidCtx    = errors.New("invalid context")
-	ErrConvert       = errors.New("type convert error")
-	MsgConvertErr    = "type convert error"
-	ErrConvertErr    = errors.New(MsgConvertErr)
+	ErrInvalidHeader      = errors.New("invalid auth header")
+	ErrSameAsName         = errors.New("account name and password MUST NOT be same")
+	ErrSameAsReversedName = errors.New("password MUST NOT be the revered account name")
+	ErrNoHeader           = errors.New("should provide Authorization header")
+	ErrInvalidCtx         = errors.New("invalid context")
+	ErrConvert            = errors.New("type convert error")
+	MsgConvertErr         = "type convert error"
+	ErrConvertErr         = errors.New(MsgConvertErr)
 )
 
 var errorsMap = map[int32]string{
