@@ -33,8 +33,41 @@ var (
 	ErrConvertErr         = errors.New(MsgConvertErr)
 )
 
+// error code range: ***200 - ***249
+const (
+	ErrAccountNotExist       int32 = 400200
+	ErrRoleNotExist          int32 = 400201
+	ErrAccountHasInvalidRole int32 = 400202
+	ErrAccountNoQuota        int32 = 400203
+	ErrRoleNoQuota           int32 = 400204
+	ErrRoleIsBound           int32 = 400205
+
+	ErrUnauthorized   int32 = 401201
+	ErrUserOrPwdWrong int32 = 401202
+	ErrNoPermission   int32 = 401203
+
+	ErrAccountBlocked int32 = 403201
+
+	ErrAccountConflict int32 = 409200
+	ErrRoleConflict    int32 = 409201
+)
+
 var errorsMap = map[int32]string{
-	// TODO...
+	ErrAccountNotExist:       "account not exists",
+	ErrRoleNotExist:          "role not exists",
+	ErrAccountHasInvalidRole: "account has invalid role(s)",
+	ErrAccountNoQuota:        "no quota to create account",
+	ErrRoleNoQuota:           "no quota to create role",
+	ErrRoleIsBound:           "role is bound to some user(s)",
+
+	ErrAccountBlocked: "account blocked",
+
+	ErrUnauthorized:   "request unauthorized",
+	ErrUserOrPwdWrong: "user name or password is wrong",
+	ErrNoPermission:   "no permission(s)",
+
+	ErrAccountConflict: "account name is duplicated",
+	ErrRoleConflict:    "role name is duplicated",
 }
 
 var errManager = errsvc.NewManager()
