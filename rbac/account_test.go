@@ -49,6 +49,13 @@ func TestAccount_Check(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{name: "given reversed name as pwd",
+			fields: fields{
+				Name:     "test-a",
+				Password: "a-tset",
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		a := &Account{
