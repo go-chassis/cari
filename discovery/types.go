@@ -161,13 +161,23 @@ func (m *Response) GetCode() int32 {
 	if m != nil {
 		return m.Code
 	}
-	return 0
+	return ResponseSuccess
 }
 func (m *Response) GetMessage() string {
 	if m != nil {
 		return m.Message
 	}
 	return ""
+}
+
+func (m *Response) Succeed() {
+	if m != nil {
+		m.Code = ResponseSuccess
+	}
+}
+
+func (m *Response) IsSucceed() bool {
+	return m == nil || m.GetCode() == ResponseSuccess
 }
 
 type GetExistenceByIDRequest struct {
