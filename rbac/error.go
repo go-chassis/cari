@@ -19,6 +19,7 @@ package rbac
 
 import (
 	"errors"
+	"github.com/go-chassis/cari/discovery"
 	"github.com/go-chassis/cari/pkg/errsvc"
 )
 
@@ -42,9 +43,12 @@ const (
 	ErrRoleNoQuota           int32 = 400204
 	ErrRoleIsBound           int32 = 400205
 
-	ErrUnauthorized   int32 = 401201
-	ErrUserOrPwdWrong int32 = 401202
-	ErrNoPermission   int32 = 401203
+	ErrUnauthorized             int32 = 401201
+	ErrUserOrPwdWrong           int32 = 401202
+	ErrNoPermission             int32 = 401203
+	ErrNoAuthHeader             int32 = 401204
+	ErrTokenExpired             int32 = 401205
+	ErrTokenOwnedAccountDeleted int32 = 401206
 
 	ErrAccountBlocked int32 = 403201
 
@@ -53,37 +57,38 @@ const (
 )
 
 var errorsMap = map[int32]string{
-	ErrAccountNotExist:       "account not exists",
-	ErrRoleNotExist:          "role not exists",
-	ErrAccountHasInvalidRole: "account has invalid role(s)",
-	ErrAccountNoQuota:        "no quota to create account",
-	ErrRoleNoQuota:           "no quota to create role",
-	ErrRoleIsBound:           "role is bound to some user(s)",
+	ErrAccountNotExist:       "Account not exists",
+	ErrRoleNotExist:          "Role not exists",
+	ErrAccountHasInvalidRole: "Account has invalid role(s)",
+	ErrAccountNoQuota:        "No quota to create account",
+	ErrRoleNoQuota:           "No quota to create role",
+	ErrRoleIsBound:           "Role is bound to some user(s)",
 
-	ErrAccountBlocked: "account blocked",
+	ErrAccountBlocked: "Account blocked",
 
-	ErrUnauthorized:   "request unauthorized",
-	ErrUserOrPwdWrong: "user name or password is wrong",
-	ErrNoPermission:   "no permission(s)",
+	ErrUnauthorized:             "Request unauthorized",
+	ErrUserOrPwdWrong:           "User name or password is wrong",
+	ErrNoPermission:             "No permission(s)",
+	ErrNoAuthHeader:             "No authorization header",
+	ErrTokenExpired:             "Token is expired",
+	ErrTokenOwnedAccountDeleted: "The account that owns the token is deleted",
 
 	ErrAccountConflict: "account name is duplicated",
 	ErrRoleConflict:    "role name is duplicated",
 }
 
-var errManager = errsvc.NewManager()
-
 func init() {
-	MustRegisterErrs(errorsMap)
+	discovery.MustRegisterErrs(errorsMap)
 }
 
 func MustRegisterErrs(errs map[int32]string) {
-	errManager.MustRegisterMap(errs)
+	discovery.MustRegisterErrs(errs)
 }
 
 func MustRegisterErr(code int32, message string) {
-	errManager.MustRegister(code, message)
+	discovery.MustRegisterErr(code, message)
 }
 
 func NewError(code int32, detail string) *errsvc.Error {
-	return errManager.NewError(code, detail)
+	return discovery.NewError(code, detail)
 }
