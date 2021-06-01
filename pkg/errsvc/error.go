@@ -42,3 +42,12 @@ func (e *Error) StatusCode() int {
 func (e *Error) InternalError() bool {
 	return e.Code >= 500000
 }
+
+// IsCodeEqual reports whether the err's code equal the target code
+func IsErrEqualCode(err error, targetCode int32) bool {
+	svcErr, ok := err.(*Error)
+	if !ok {
+		return false
+	}
+	return svcErr.Code == targetCode
+}
