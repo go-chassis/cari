@@ -42,6 +42,7 @@ const (
 	ErrAccountNoQuota        int32 = 400203
 	ErrRoleNoQuota           int32 = 400204
 	ErrRoleIsBound           int32 = 400205
+	ErrNewPwdBad             int32 = 400206 // when change password
 
 	ErrUnauthorized             int32 = 401201
 	ErrUserOrPwdWrong           int32 = 401202
@@ -49,8 +50,12 @@ const (
 	ErrNoAuthHeader             int32 = 401204
 	ErrTokenExpired             int32 = 401205
 	ErrTokenOwnedAccountDeleted int32 = 401206
+	ErrOldPwdWrong              int32 = 401207 // when change password
 
-	ErrAccountBlocked int32 = 403201
+	ErrAccountBlocked              int32 = 403201
+	ErrForbidOperateBuildInAccount int32 = 403202
+	ErrForbidOperateBuildInRole    int32 = 403203
+	ErrForbidOperateSelfAccount    int32 = 403204
 
 	ErrAccountConflict int32 = 409200
 	ErrRoleConflict    int32 = 409201
@@ -63,8 +68,12 @@ var errorsMap = map[int32]string{
 	ErrAccountNoQuota:        "No quota to create account",
 	ErrRoleNoQuota:           "No quota to create role",
 	ErrRoleIsBound:           "Role is bound to some user(s)",
+	ErrNewPwdBad:             "New password is bad",
 
-	ErrAccountBlocked: "Account blocked",
+	ErrAccountBlocked:              "Account blocked",
+	ErrForbidOperateBuildInAccount: "Forbid to operate build-in account(s)",
+	ErrForbidOperateBuildInRole:    "Forbid to operate build-in role(s)",
+	ErrForbidOperateSelfAccount:    "Forbid to operate your own account",
 
 	ErrUnauthorized:             "Request unauthorized",
 	ErrUserOrPwdWrong:           "User name or password is wrong",
@@ -72,6 +81,7 @@ var errorsMap = map[int32]string{
 	ErrNoAuthHeader:             "No authorization header",
 	ErrTokenExpired:             "Token is expired",
 	ErrTokenOwnedAccountDeleted: "The account that owns the token is deleted",
+	ErrOldPwdWrong:              "Password is wrong",
 
 	ErrAccountConflict: "account name is duplicated",
 	ErrRoleConflict:    "role name is duplicated",
