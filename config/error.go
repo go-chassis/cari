@@ -25,7 +25,7 @@ const (
 	ErrInvalidParams       int32 = 400001
 	ErrHealthCheck         int32 = 400002
 	ErrObserveEvent        int32 = 400003
-	ErrSkipUpload          int32 = 400004
+	ErrSkipDuplicateKV     int32 = 400004
 	ErrStopUpload          int32 = 400005
 	ErrRequiredRecordId    int32 = 403001
 	ErrRecordNotExists     int32 = 404001
@@ -38,8 +38,8 @@ var errorsMap = map[int32]string{
 	ErrInvalidParams:       "invalid parameter(s)",
 	ErrHealthCheck:         "failed to check kie healthy",
 	ErrRequiredRecordId:    "required record id",
-	ErrSkipUpload:          "skip upload key values",
-	ErrStopUpload:          "stop upload key values",
+	ErrSkipDuplicateKV:     "skip overriding duplicate kvs",
+	ErrStopUpload:          "stop overriding kvs after reaching the duplicate kv",
 	ErrObserveEvent:        "failed to observe event",
 	ErrRecordNotExists:     "record does not exist",
 	ErrRecordAlreadyExists: "record already exist",
