@@ -26,6 +26,7 @@ const (
 	ErrHealthCheck         int32 = 400002
 	ErrObserveEvent        int32 = 400003
 	ErrSkipUpload          int32 = 400004
+	ErrStopUpload          int32 = 400005
 	ErrRequiredRecordId    int32 = 403001
 	ErrRecordNotExists     int32 = 404001
 	ErrRecordAlreadyExists int32 = 409001
@@ -38,6 +39,7 @@ var errorsMap = map[int32]string{
 	ErrHealthCheck:         "failed to check kie healthy",
 	ErrRequiredRecordId:    "required record id",
 	ErrSkipUpload:          "skip upload key values",
+	ErrStopUpload:          "stop upload key values",
 	ErrObserveEvent:        "failed to observe event",
 	ErrRecordNotExists:     "record does not exist",
 	ErrRecordAlreadyExists: "record already exist",
