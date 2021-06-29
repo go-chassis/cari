@@ -125,11 +125,6 @@ func (mk *MicroServiceKey) String() string {
 	return fmt.Sprintf("&{%v %v %v %v %v %v}", mk.Tenant, mk.Environment, mk.AppId, mk.ServiceName, mk.Alias, mk.Version)
 }
 
-type FrameWorkProperty struct {
-	Name    string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
-	Version string `protobuf:"bytes,2,opt,name=version" json:"version,omitempty"`
-}
-
 type ServiceRule struct {
 	RuleId       string `protobuf:"bytes,1,opt,name=ruleId" json:"ruleId,omitempty" bson:"rule_id"`
 	RuleType     string `protobuf:"bytes,2,opt,name=ruleType" json:"ruleType,omitempty" bson:"rule_type"`
