@@ -19,6 +19,7 @@ package rbac
 
 import (
 	"errors"
+
 	"github.com/go-chassis/cari/discovery"
 	"github.com/go-chassis/cari/pkg/errsvc"
 )
@@ -30,8 +31,6 @@ var (
 	ErrNoHeader           = errors.New("should provide Authorization header")
 	ErrInvalidCtx         = errors.New("invalid context")
 	ErrConvert            = errors.New("type convert error")
-	MsgConvertErr         = "type convert error"
-	ErrConvertErr         = errors.New(MsgConvertErr)
 )
 
 // error code range: ***200 - ***249
