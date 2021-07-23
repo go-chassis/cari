@@ -19,6 +19,7 @@ package rbac
 
 import (
 	"errors"
+
 	"github.com/go-chassis/cari/discovery"
 	"github.com/go-chassis/cari/pkg/errsvc"
 )
@@ -30,8 +31,6 @@ var (
 	ErrNoHeader           = errors.New("should provide Authorization header")
 	ErrInvalidCtx         = errors.New("invalid context")
 	ErrConvert            = errors.New("type convert error")
-	MsgConvertErr         = "type convert error"
-	ErrConvertErr         = errors.New(MsgConvertErr)
 )
 
 // error code range: ***200 - ***249
@@ -46,7 +45,6 @@ const (
 
 	ErrUnauthorized             int32 = 401201
 	ErrUserOrPwdWrong           int32 = 401202
-	ErrNoPermission             int32 = 401203
 	ErrNoAuthHeader             int32 = 401204
 	ErrTokenExpired             int32 = 401205
 	ErrTokenOwnedAccountDeleted int32 = 401206
@@ -56,6 +54,7 @@ const (
 	ErrForbidOperateBuildInAccount int32 = 403202
 	ErrForbidOperateBuildInRole    int32 = 403203
 	ErrForbidOperateSelfAccount    int32 = 403204
+	ErrNoPermission                int32 = 403205
 
 	ErrAccountConflict int32 = 409200
 	ErrRoleConflict    int32 = 409201
