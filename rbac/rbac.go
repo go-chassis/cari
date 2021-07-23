@@ -109,7 +109,7 @@ func GetRolesList(m map[string]interface{}) ([]string, error) {
 	}
 	roleList, err := getRolesList(roles)
 	if err != nil {
-		return nil, ErrConvertErr
+		return nil, ErrConvert
 	}
 	return roleList, nil
 }

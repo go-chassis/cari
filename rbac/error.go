@@ -45,7 +45,6 @@ const (
 
 	ErrUnauthorized             int32 = 401201
 	ErrUserOrPwdWrong           int32 = 401202
-	ErrNoPermission             int32 = 401203
 	ErrNoAuthHeader             int32 = 401204
 	ErrTokenExpired             int32 = 401205
 	ErrTokenOwnedAccountDeleted int32 = 401206
@@ -55,6 +54,7 @@ const (
 	ErrForbidOperateBuildInAccount int32 = 403202
 	ErrForbidOperateBuildInRole    int32 = 403203
 	ErrForbidOperateSelfAccount    int32 = 403204
+	ErrNoPermission                int32 = 403205
 
 	ErrAccountConflict int32 = 409200
 	ErrRoleConflict    int32 = 409201
