@@ -20,6 +20,11 @@ package discovery
 import "github.com/go-chassis/cari/pkg/errsvc"
 
 const (
+	// ErrWebsocketInstanceNotExists custom error is used to end the websocket disconnection
+	ErrWebsocketInstanceNotExists int = 4001
+)
+
+const (
 	ErrInvalidParams           int32 = 400001
 	ErrUnhealthy               int32 = 400002
 	ErrServiceAlreadyExists    int32 = 400010
