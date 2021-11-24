@@ -239,6 +239,7 @@ type GetServiceResponse struct {
 }
 
 type GetServicesRequest struct {
+	WithShared bool `protobuf:"bytes,1,opt,name=withShared" json:"withShared"`
 }
 
 type GetServicesResponse struct {
