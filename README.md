@@ -12,3 +12,6 @@ defines a common interface to encrypt and decrypt info
 
 ## rbac
 defines a common struct to account and role info
+
+## sync
+defines common structs for synchronization mechanism, synchronize data to different peer clusters
