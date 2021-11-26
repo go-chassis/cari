@@ -17,6 +17,12 @@
 
 package sync
 
+const (
+	CreateAction = "create"
+	UpdateAction = "update"
+	DeleteAction = "delete"
+)
+
 // Task is db struct to store sync task
 type Task struct {
 	TaskID    string      `json:"task_id" bson:"task_id"`
