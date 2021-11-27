@@ -28,6 +28,8 @@ type Task struct {
 	TaskID    string      `json:"task_id" bson:"task_id"`
 	Action    string      `json:"action" bson:"action"`
 	DataType  string      `json:"data_type" bson:"data_type"`
+	Domain    string      `json:"domain" bson:"domain"`
+	Project   string      `json:"project" bson:"project"`
 	Data      interface{} `json:"data" bson:"data"`
 	Timestamp int64       `json:"timestamp" bson:"timestamp"`
 	Status    string      `json:"status" bson:"status"`
