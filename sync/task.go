@@ -23,6 +23,11 @@ import (
 	"github.com/gofrs/uuid"
 )
 
+const (
+	PendingStatus = "pending"
+	DoneStatus    = "done"
+)
+
 // NewTask return task with action and datatype
 func NewTask(domain, project, action, dataType string) (*Task, error) {
 	taskId, err := uuid.NewV4()
@@ -36,5 +41,6 @@ func NewTask(domain, project, action, dataType string) (*Task, error) {
 		Domain:    domain,
 		Project:   project,
 		Timestamp: time.Now().UnixNano(),
+		Status:    PendingStatus,
 	}, nil
 }
