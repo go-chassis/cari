@@ -17,7 +17,9 @@
 
 package discovery
 
-import "fmt"
+import (
+	"fmt"
+)
 
 const (
 	MS_UP   string = "UP"
