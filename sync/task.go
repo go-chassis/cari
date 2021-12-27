@@ -18,6 +18,7 @@
 package sync
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/gofrs/uuid"
@@ -28,19 +29,24 @@ const (
 	DoneStatus    = "done"
 )
 
-// NewTask return task with action and datatype
-func NewTask(domain, project, action, dataType string) (*Task, error) {
+// NewTask return task with domain, project , action , resourceType and resource
+func NewTask(domain, project, action, resourceType string, resource interface{}) (*Task, error) {
 	taskId, err := uuid.NewV4()
 	if err != nil {
 		return nil, err
 	}
+	resourceValue, err := json.Marshal(resource)
+	if err != nil {
+		return nil, err
+	}
 	return &Task{
-		TaskID:    taskId.String(),
-		Action:    action,
-		DataType:  dataType,
-		Domain:    domain,
-		Project:   project,
-		Timestamp: time.Now().UnixNano(),
-		Status:    PendingStatus,
+		ID:           taskId.String(),
+		Domain:       domain,
+		Project:      project,
+		ResourceType: resourceType,
+		Resource:     resourceValue,
+		Action:       action,
+		Timestamp:    time.Now().UnixNano(),
+		Status:       PendingStatus,
 	}, nil
 }
