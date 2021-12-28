@@ -4,6 +4,9 @@ it defines the interfaces of cloud services that application should follow to ru
 
 
 # packages
+## config
+defines a common struct to store kv configuration
+
 ## discovery
 defines a standard service for register and discovery, service like eureka,consul and service center 
 
