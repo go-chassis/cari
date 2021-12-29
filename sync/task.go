@@ -45,6 +45,7 @@ func NewTask(domain, project, action, resourceType string, resource interface{})
 		Project:      project,
 		ResourceType: resourceType,
 		Resource:     resourceValue,
+		Opts:         make(map[string]string),
 		Action:       action,
 		Timestamp:    time.Now().UnixNano(),
 		Status:       PendingStatus,
