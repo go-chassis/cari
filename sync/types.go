@@ -25,14 +25,15 @@ const (
 
 // Task is db struct to store sync task
 type Task struct {
-	ID           string `json:"id" bson:"id"`
-	Domain       string `json:"domain" bson:"domain"`
-	Project      string `json:"project" bson:"project"`
-	ResourceType string `json:"resource_type" bson:"resource_type"`
-	Resource     []byte `json:"resource" bson:"resource"`
-	Action       string `json:"action" bson:"action"`
-	Timestamp    int64  `json:"timestamp" bson:"timestamp"`
-	Status       string `json:"status" bson:"status"`
+	ID           string            `json:"id" bson:"id"`
+	Domain       string            `json:"domain" bson:"domain"`
+	Project      string            `json:"project" bson:"project"`
+	ResourceType string            `json:"resource_type" bson:"resource_type"`
+	Resource     []byte            `json:"resource" bson:"resource"`
+	Opts         map[string]string `json:"opts" bson:"opts"`
+	Action       string            `json:"action" bson:"action"`
+	Timestamp    int64             `json:"timestamp" bson:"timestamp"`
+	Status       string            `json:"status" bson:"status"`
 }
 
 // Tombstone is db struct to store the deleted resource information
