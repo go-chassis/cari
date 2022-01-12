@@ -13,4 +13,4 @@ jobs:
       uses: actions/checkout@v1
     - name: UT
       run: |
-        go test ./...
+        go test -short -covermode=atomic $(go list ./... | grep -v db | grep -v dlock | grep -v third_party | grep -v examples)
