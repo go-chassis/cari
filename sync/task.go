@@ -35,10 +35,20 @@ func NewTask(domain, project, action, resourceType string, resource interface{})
 	if err != nil {
 		return nil, err
 	}
-	resourceValue, err := json.Marshal(resource)
-	if err != nil {
-		return nil, err
+
+	var resourceValue []byte
+	switch rv := resource.(type) {
+	case string:
+		resourceValue = []byte(rv)
+	case []byte:
+		resourceValue = rv
+	default:
+		resourceValue, err = json.Marshal(resource)
+		if err != nil {
+			return nil, err
+		}
 	}
+
 	return &Task{
 		ID:           taskId.String(),
 		Domain:       domain,
