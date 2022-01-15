@@ -37,11 +37,11 @@ func NewTask(domain, project, action, resourceType string, resource interface{})
 	}
 
 	var resourceValue []byte
-	switch resource.(type) {
+	switch rv := resource.(type) {
 	case string:
-		resourceValue = []byte(resource.(string))
+		resourceValue = []byte(rv)
 	case []byte:
-		resourceValue = resource.([]byte)
+		resourceValue = rv
 	default:
 		resourceValue, err = json.Marshal(resource)
 		if err != nil {
