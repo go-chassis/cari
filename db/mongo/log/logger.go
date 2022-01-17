@@ -15,19 +15,21 @@
  * limitations under the License.
  */
 
-package db
+package log
 
-import "time"
+import (
+	"github.com/go-chassis/openlog"
+)
 
-type Config struct {
-	Kind        string        `yaml:"kind"`
-	URI         string        `yaml:"uri"`
-	PoolSize    int           `yaml:"poolSize"`
-	SSLEnabled  bool          `yaml:"sslEnabled"`
-	VerifyPeer  bool          `yaml:"verifyPeer"`
-	RootCA      string        `yaml:"rootCAFile"`
-	CertFile    string        `yaml:"certFile"`
-	KeyFile     string        `yaml:"keyFile"`
-	CertPwdFile string        `yaml:"certPwdFile"`
-	Timeout     time.Duration `yaml:"timeout"`
+var globalLogger openlog.Logger
+
+func GetLogger() openlog.Logger {
+	if globalLogger == nil {
+		return openlog.GetLogger()
+	}
+	return globalLogger
+}
+
+func SetLogger(logger openlog.Logger) {
+	globalLogger = logger
 }
