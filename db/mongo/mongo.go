@@ -19,11 +19,8 @@ package mongo
 
 import (
 	"context"
-	"crypto/tls"
-	"crypto/x509"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"time"
 
 	"github.com/go-chassis/foundation/gopool"
@@ -137,33 +134,7 @@ func (mc *Client) newClient(ctx context.Context, dbName string) (err error) {
 	clientOptions := []*options.ClientOptions{options.Client().ApplyURI(mc.config.URI)}
 	clientOptions = append(clientOptions, options.Client().SetMaxPoolSize(uint64(mc.config.PoolSize)))
 	if mc.config.SSLEnabled {
-		if mc.config.RootCA == "" {
-			err = ErrRootCAMissing
-			return
-		}
-		pool := x509.NewCertPool()
-		caCert, err := ioutil.ReadFile(mc.config.RootCA)
-		if err != nil {
-			err = fmt.Errorf("read ca cert file %s failed", mc.config.RootCA)
-			log.GetLogger().Error("ca cert :" + err.Error())
-			return err
-		}
-		pool.AppendCertsFromPEM(caCert)
-		clientCerts := make([]tls.Certificate, 0)
-		if mc.config.CertFile != "" && mc.config.KeyFile != "" {
-			cert, err := tls.LoadX509KeyPair(mc.config.CertFile, mc.config.KeyFile)
-			if err != nil {
-				log.GetLogger().Error("load X509 keyPair failed: " + err.Error())
-				return err
-			}
-			clientCerts = append(clientCerts, cert)
-		}
-		tc := &tls.Config{
-			RootCAs:            pool,
-			InsecureSkipVerify: !mc.config.VerifyPeer,
-			Certificates:       clientCerts,
-		}
-		clientOptions = append(clientOptions, options.Client().SetTLSConfig(tc))
+		clientOptions = append(clientOptions, options.Client().SetTLSConfig(mc.config.TLSConfig))
 		log.GetLogger().Info("enabled ssl communication to mongodb")
 	}
 	mc.client, err = mongo.Connect(ctx, clientOptions...)

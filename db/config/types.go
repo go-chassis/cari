@@ -18,22 +18,19 @@
 package config
 
 import (
+	"crypto/tls"
 	"time"
 
 	"github.com/go-chassis/openlog"
 )
 
 type Config struct {
-	Kind        string        `yaml:"kind"`
-	URI         string        `yaml:"uri"`
-	PoolSize    int           `yaml:"poolSize"`
-	SSLEnabled  bool          `yaml:"sslEnabled"`
-	VerifyPeer  bool          `yaml:"verifyPeer"`
-	RootCA      string        `yaml:"rootCAFile"`
-	CertFile    string        `yaml:"certFile"`
-	KeyFile     string        `yaml:"keyFile"`
-	CertPwdFile string        `yaml:"certPwdFile"`
-	Timeout     time.Duration `yaml:"timeout"`
+	Kind       string        `yaml:"kind"`
+	URI        string        `yaml:"uri"`
+	PoolSize   int           `yaml:"poolSize"`
+	TLSConfig  *tls.Config   `json:"-"`
+	SSLEnabled bool          `yaml:"sslEnabled" json:"-"`
+	Timeout    time.Duration `yaml:"timeout"`
 	// Logger logger for adapter, by default use openlog.GetLogger()
 	Logger openlog.Logger `json:"-"`
 }

@@ -18,8 +18,6 @@
 package etcd
 
 import (
-	"crypto/tls"
-
 	"github.com/little-cui/etcdadpt"
 	// support embedded etcd
 	_ "github.com/little-cui/etcdadpt/embedded"
@@ -27,7 +25,6 @@ import (
 
 	"github.com/go-chassis/cari/db"
 	"github.com/go-chassis/cari/db/config"
-	dtls "github.com/go-chassis/cari/db/tls"
 )
 
 func init() {
@@ -37,19 +34,11 @@ func init() {
 }
 
 func NewDatasource(c *config.Config) error {
-	var tlsConfig *tls.Config
-	if c.SSLEnabled {
-		var err error
-		tlsConfig, err = dtls.NewTLSConfig(c)
-		if err != nil {
-			return err
-		}
-	}
 	return etcdadpt.Init(etcdadpt.Config{
 		Kind:             c.Kind,
 		ClusterAddresses: c.URI,
 		SslEnabled:       c.SSLEnabled,
-		TLSConfig:        tlsConfig,
+		TLSConfig:        c.TLSConfig,
 		Logger:           c.Logger,
 	})
 }
