@@ -18,7 +18,6 @@
 package mongo
 
 import (
-	"errors"
 	"sync"
 
 	"github.com/go-chassis/cari/dlock"
@@ -27,8 +26,6 @@ import (
 func init() {
 	dlock.Install("mongo", NewDLock)
 }
-
-var ErrNotImplement = errors.New("func do not implemented")
 
 func NewDLock() (dlock.DLock, error) {
 	return &DB{lockMap: sync.Map{}}, nil
@@ -40,17 +37,17 @@ type DB struct {
 
 func (d *DB) Lock(key string, ttl int64) error {
 	// TODO need to implement it
-	return ErrNotImplement
+	return nil
 }
 
 func (d *DB) TryLock(key string, ttl int64) error {
 	// TODO need to implement it
-	return ErrNotImplement
+	return nil
 }
 
 func (d *DB) Renew(key string) error {
 	// TODO need to implement it
-	return ErrNotImplement
+	return nil
 }
 
 func (d *DB) IsHoldLock(key string) bool {
@@ -62,5 +59,5 @@ func (d *DB) IsHoldLock(key string) bool {
 
 func (d *DB) Unlock(key string) error {
 	// TODO need to implement it
-	return ErrNotImplement
+	return nil
 }
