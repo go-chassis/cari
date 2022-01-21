@@ -192,25 +192,20 @@ func (mc *Client) ExecTxn(ctx context.Context, cmd func(sessionContext mongo.Ses
 	if err != nil {
 		return err
 	}
-	if err = session.StartTransaction(); err != nil {
-		return err
-	}
 	defer session.EndSession(ctx)
-	if err = mongo.WithSession(ctx, session, func(sc mongo.SessionContext) error {
-		if err = cmd(sc); err != nil {
-			if err = session.AbortTransaction(sc); err != nil {
-				return err
-			}
-		} else {
-			if err = session.CommitTransaction(sc); err != nil {
-				return err
-			}
+	err = mongo.WithSession(ctx, session, func(sc mongo.SessionContext) error {
+		if err = session.StartTransaction(); err != nil {
+			return err
 		}
-		return nil
-	}); err != nil {
-		return err
-	}
-	return nil
+		if err = cmd(sc); err != nil {
+			if abortErr := session.AbortTransaction(sc); abortErr != nil {
+				return abortErr
+			}
+			return err
+		}
+		return session.CommitTransaction(sc)
+	})
+	return err
 }
 
 func (mc *Client) GetDB() *mongo.Database {
