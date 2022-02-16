@@ -21,6 +21,8 @@ const (
 	CreateAction = "create"
 	UpdateAction = "update"
 	DeleteAction = "delete"
+
+	Default = "default"
 )
 
 // Task is db struct to store sync task

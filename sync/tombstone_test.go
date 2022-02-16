@@ -17,21 +17,16 @@
 
 package sync
 
-import "time"
+import (
+	"testing"
 
-// NewTombstone return tombstone with resourceID,resourceType ,domain and project
-func NewTombstone(domain, project, resourceType, resourceID string) *Tombstone {
-	if len(domain) == 0 {
-		domain = Default
-	}
-	if len(project) == 0 {
-		project = Default
-	}
-	return &Tombstone{
-		ResourceID:   resourceID,
-		ResourceType: resourceType,
-		Domain:       domain,
-		Project:      project,
-		Timestamp:    time.Now().UnixNano(),
-	}
+	"github.com/stretchr/testify/assert"
+)
+
+func TestNewTombstone(t *testing.T) {
+	t.Run("create a tombstone, the domain and project is empty should return default", func(t *testing.T) {
+		tombstone := NewTombstone("", "", "kv", "11111")
+		assert.Equal(t, Default, tombstone.Domain)
+		assert.Equal(t, Default, tombstone.Project)
+	})
 }

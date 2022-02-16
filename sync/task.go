@@ -35,6 +35,12 @@ func NewTask(domain, project, action, resourceType string, resource interface{})
 	if err != nil {
 		return nil, err
 	}
+	if len(domain) == 0 {
+		domain = Default
+	}
+	if len(project) == 0 {
+		project = Default
+	}
 
 	var resourceValue []byte
 	switch rv := resource.(type) {
