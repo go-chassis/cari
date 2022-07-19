@@ -94,12 +94,13 @@ type Statistics struct {
 }
 
 type GetServicesInfoRequest struct {
-	Options     []string `protobuf:"bytes,1,rep,name=options" json:"options,omitempty"`
-	AppId       string   `protobuf:"bytes,2,opt,name=appId" json:"appId,omitempty"`
-	ServiceName string   `protobuf:"bytes,3,opt,name=serviceName" json:"serviceName,omitempty"`
-	CountOnly   bool     `protobuf:"varint,4,opt,name=countOnly" json:"countOnly,omitempty"`
-	WithShared  bool     `protobuf:"varint,5,opt,name=withShared" json:"withShared,omitempty"`
-	Environment string   `protobuf:"bytes,6,opt,name=environment" json:"environment,omitempty"`
+	Options     []string          `protobuf:"bytes,1,rep,name=options" json:"options,omitempty"`
+	AppId       string            `protobuf:"bytes,2,opt,name=appId" json:"appId,omitempty"`
+	ServiceName string            `protobuf:"bytes,3,opt,name=serviceName" json:"serviceName,omitempty"`
+	Properties  map[string]string `protobuf:"bytes,2,rep,name=properties" json:"properties,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	CountOnly   bool              `protobuf:"varint,4,opt,name=countOnly" json:"countOnly,omitempty"`
+	WithShared  bool              `protobuf:"varint,5,opt,name=withShared" json:"withShared,omitempty"`
+	Environment string            `protobuf:"bytes,6,opt,name=environment" json:"environment,omitempty"`
 }
 
 type GetServicesInfoResponse struct {
