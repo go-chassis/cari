@@ -22,13 +22,13 @@ import (
 	"sync"
 )
 
-//as a user of a backend service, he only understands resource of this service,
-//to decouple authorization code from business code,
-//a middleware should handle all the authorization logic, and this middleware only understand rest API,
-//a resource mapping helps to maintain relations between api and resource.
+// as a user of a backend service, he only understands resource of this service,
+// to decouple authorization code from business code,
+// a middleware should handle all the authorization logic, and this middleware only understand rest API,
+// a resource mapping helps to maintain relations between api and resource.
 var resourceMap = sync.Map{}
 
-//PartialMap saves api partial matching
+// PartialMap saves api partial matching
 var PartialMap = map[string]string{}
 
 // GetResource try to find resource by API path, it has preheat mechanism after program start up

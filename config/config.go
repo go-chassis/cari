@@ -17,7 +17,7 @@
 
 package config
 
-//KVDoc is database struct to store kv
+// KVDoc is database struct to store kv
 type KVDoc struct {
 	ID             string `json:"id,omitempty" bson:"id,omitempty" yaml:"id,omitempty" swag:"string"`
 	LabelFormat    string `json:"label_format,omitempty" bson:"label_format,omitempty" yaml:"label_format,omitempty"`
