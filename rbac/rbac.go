@@ -114,7 +114,7 @@ func GetRolesList(m map[string]interface{}) ([]string, error) {
 	return roleList, nil
 }
 
-//BuildResourceList join the resource to an array
+// BuildResourceList join the resource to an array
 func BuildResourceList(resourceType ...string) []*Resource {
 	rt := make([]*Resource, len(resourceType))
 	for i := 0; i < len(resourceType); i++ {

@@ -1,6 +1,6 @@
 module github.com/go-chassis/cari
 
-go 1.17
+go 1.18
 
 require (
 	github.com/deckarep/golang-set v1.7.1
