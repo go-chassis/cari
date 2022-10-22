@@ -17,6 +17,25 @@
 
 package rbac
 
+import "github.com/go-chassis/cari/pkg/errsvc"
+
+// BatchCreateAccountsRequest the request definition of batch create accounts
+type BatchCreateAccountsRequest struct {
+	Accounts []*Account `json:"accounts"`
+}
+
+// BatchCreateAccountsResponse the response definition of batch create accounts
+type BatchCreateAccountsResponse struct {
+	Accounts []*BatchCreateAccountItemResponse `json:"accounts"`
+}
+
+// BatchCreateAccountItemResponse the item result of batch create accounts
+type BatchCreateAccountItemResponse struct {
+	Name string `json:"name"`
+
+	*errsvc.Error
+}
+
 type AccountResponse struct {
 	Total    int64      `json:"total,omitempty"`
 	Accounts []*Account `json:"data,omitempty"`
