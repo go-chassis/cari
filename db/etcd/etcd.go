@@ -18,10 +18,10 @@
 package etcd
 
 import (
-	"github.com/little-cui/etcdadpt"
+	"github.com/go-chassis/etcdadpt"
 	// support embedded etcd
-	_ "github.com/little-cui/etcdadpt/embedded"
-	_ "github.com/little-cui/etcdadpt/remote"
+	_ "github.com/go-chassis/etcdadpt/embedded"
+	_ "github.com/go-chassis/etcdadpt/remote"
 
 	"github.com/go-chassis/cari/db"
 	"github.com/go-chassis/cari/db/config"

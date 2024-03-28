@@ -20,8 +20,9 @@ package etcd
 import (
 	"sync"
 
+	"github.com/go-chassis/etcdadpt"
+
 	"github.com/go-chassis/cari/dlock"
-	"github.com/little-cui/etcdadpt"
 )
 
 func init() {
