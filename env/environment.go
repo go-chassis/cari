@@ -1,8 +1,8 @@
 package env
 
 type Environment struct {
-	ID           string `protobuf:"bytes,1,opt,name=id" json:"id,omitempty" bson:"id"`
-	Name         string `protobuf:"bytes,2,opt,name=name" json:"name,omitempty" bson:"name"`
+	ID           string `protobuf:"bytes,1,opt,name=id" json:"id" bson:"id"`
+	Name         string `protobuf:"bytes,2,opt,name=name" json:"name" bson:"name"`
 	Description  string `protobuf:"bytes,3,opt,name=description" json:"description,omitempty" bson:"description"`
 	Timestamp    string `protobuf:"bytes,11,opt,name=timestamp" json:"timestamp,omitempty"`
 	ModTimestamp string `protobuf:"bytes,15,opt,name=modTimestamp" json:"modTimestamp,omitempty" bson:"mod_timestamp"`
