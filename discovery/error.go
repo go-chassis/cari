@@ -27,6 +27,7 @@ const (
 const (
 	ErrInvalidParams            int32 = 400001
 	ErrUnhealthy                int32 = 400002
+	ErrUnregistryedEnv          int32 = 400004
 	ErrServiceAlreadyExists     int32 = 400010
 	ErrServiceNotExists         int32 = 400012
 	ErrDeployedInstance         int32 = 400013
@@ -55,29 +56,31 @@ const (
 )
 
 var errorsMap = map[int32]string{
-	ErrInvalidParams:           "Invalid parameter(s)",
-	ErrUnhealthy:               "Server is Unhealthy",
-	ErrServiceAlreadyExists:    "Micro-service already exists",
-	ErrServiceNotExists:        "Micro-service does not exist",
-	ErrServiceVersionNotExists: "Micro-service version does not exist",
-	ErrDeployedInstance:        "Micro-service has deployed instance(s)",
-	ErrDependedOnConsumer:      "Consumer(s) depends on this micro-service",
-	ErrUndefinedSchemaID:       "Undefined schema id",
-	ErrModifySchemaNotAllow:    "Not allowed to modify schema",
-	ErrSchemaNotExists:         "Schema does not exist",
-	ErrInstanceNotExists:       "Instance does not exist",
-	ErrPermissionDeny:          "Access micro-service refused",
-	ErrTagNotExists:            "Tag does not exist",
-	ErrRuleAlreadyExists:       "Rule already exist",
-	ErrBlackAndWhiteRule:       "Can not have both 'BLACK' and 'WHITE'",
-	ErrModifyRuleNotAllow:      "Not allowed to modify the type of the rule",
-	ErrRuleNotExists:           "Rule does not exist",
-	ErrNotEnoughQuota:          "Not enough quota",
-	ErrInternal:                "Internal server error",
-	ErrUnavailableBackend:      "Registry service is unavailable",
-	ErrUnavailableQuota:        "Quota service is unavailable",
-	ErrEndpointAlreadyExists:   "Endpoint is already belong to other service",
-	ErrForbidden:               "Forbidden",
+	ErrInvalidParams:            "Invalid parameter(s)",
+	ErrUnhealthy:                "Server is Unhealthy",
+	ErrServiceAlreadyExists:     "Micro-service already exists",
+	ErrServiceNotExists:         "Micro-service does not exist",
+	ErrServiceVersionNotExists:  "Micro-service version does not exist",
+	ErrDeployedInstance:         "Micro-service has deployed instance(s)",
+	ErrDependedOnConsumer:       "Consumer(s) depends on this micro-service",
+	ErrUndefinedSchemaID:        "Undefined schema id",
+	ErrModifySchemaNotAllow:     "Not allowed to modify schema",
+	ErrSchemaNotExists:          "Schema does not exist",
+	ErrInstanceNotExists:        "Instance does not exist",
+	ErrPermissionDeny:           "Access micro-service refused",
+	ErrTagNotExists:             "Tag does not exist",
+	ErrRuleAlreadyExists:        "Rule already exist",
+	ErrBlackAndWhiteRule:        "Can not have both 'BLACK' and 'WHITE'",
+	ErrModifyRuleNotAllow:       "Not allowed to modify the type of the rule",
+	ErrRuleNotExists:            "Rule does not exist",
+	ErrNotEnoughQuota:           "Not enough quota",
+	ErrInternal:                 "Internal server error",
+	ErrUnavailableBackend:       "Registry service is unavailable",
+	ErrUnavailableQuota:         "Quota service is unavailable",
+	ErrEndpointAlreadyExists:    "Endpoint is already belong to other service",
+	ErrForbidden:                "Forbidden",
+	ErrUnregistryedEnv:          "Env has services",
+	ErrEnvironmentAlreadyExists: "EnvId already exist",
 }
 
 var errManager = errsvc.NewManager()
