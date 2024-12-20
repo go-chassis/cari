@@ -35,6 +35,14 @@ type Pool struct {
 
 	status      map[string]string
 	onceMonitor sync.Once
+	quit        chan struct{}
+	onceQuit    sync.Once
+}
+
+func (p *Pool) Close() {
+	p.onceQuit.Do(func() {
+		close(p.quit)
+	})
 }
 
 // NewPool Get registry pool instance
@@ -55,6 +63,16 @@ func (p *Pool) appendAddressToStatus(addresses []string) {
 		}
 		p.status[v] = statusAvailable
 	}
+}
+
+func (p *Pool) ResetAddress(addresses []string) {
+	p.mutex.Lock()
+	defer p.mutex.Unlock()
+	p.defaultAddress = removeDuplicates(addresses)
+	p.diffAzAddress = []string{}
+	p.sameAzAddress = []string{}
+	p.status = make(map[string]string)
+	p.appendAddressToStatus(addresses)
 }
 
 func (p *Pool) SetAddressByInstances(instances []*discovery.MicroServiceInstance) error {
@@ -179,14 +197,14 @@ func (p *Pool) monitor() {
 			}
 		}
 		ticker := time.NewTicker(interval * time.Second)
-		quit := make(chan struct{})
+		p.quit = make(chan struct{})
 
 		go func() {
 			for {
 				select {
 				case <-ticker.C:
 					p.checkConnectivity()
-				case <-quit:
+				case <-p.quit:
 					ticker.Stop()
 					return
 				}
