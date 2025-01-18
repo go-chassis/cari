@@ -1,13 +1,17 @@
 package addresspool
 
 import (
+	"context"
 	"fmt"
+	"io"
 	"net"
+	"net/http"
 	"os"
 	"strconv"
 	"sync"
 	"time"
 
+	"github.com/go-chassis/foundation/httpclient"
 	"github.com/go-chassis/openlog"
 
 	"github.com/go-chassis/cari/discovery"
@@ -24,6 +28,16 @@ const (
 	healthProbeTimeout             = time.Second
 )
 
+type HttpProbeOptions struct {
+	Client   *httpclient.Requests
+	Protocol string
+	Path     string
+}
+
+type Options struct {
+	HttpProbeOptions *HttpProbeOptions // used in available check if set, tcp will be used if not set
+}
+
 // Pool cloud server address pool
 type Pool struct {
 	mutex          sync.RWMutex
@@ -33,10 +47,11 @@ type Pool struct {
 	sameAzAddress []string
 	diffAzAddress []string
 
-	status      map[string]string
-	onceMonitor sync.Once
-	quit        chan struct{}
-	onceQuit    sync.Once
+	status           map[string]string
+	onceMonitor      sync.Once
+	quit             chan struct{}
+	onceQuit         sync.Once
+	httpProbeOptions *HttpProbeOptions
 }
 
 func (p *Pool) Close() {
@@ -46,23 +61,17 @@ func (p *Pool) Close() {
 }
 
 // NewPool Get registry pool instance
-func NewPool(addresses []string) *Pool {
+func NewPool(addresses []string, opts ...Options) *Pool {
 	p := &Pool{
 		defaultAddress: removeDuplicates(addresses),
 		status:         make(map[string]string),
 	}
-	p.appendAddressToStatus(addresses)
+
+	if len(opts) > 0 && opts[0].HttpProbeOptions != nil {
+		p.httpProbeOptions = opts[0].HttpProbeOptions
+	}
 	p.monitor()
 	return p
-}
-
-func (p *Pool) appendAddressToStatus(addresses []string) {
-	for _, v := range addresses {
-		if _, ok := p.status[v]; ok {
-			continue
-		}
-		p.status[v] = statusAvailable
-	}
 }
 
 func (p *Pool) ResetAddress(addresses []string) {
@@ -72,7 +81,6 @@ func (p *Pool) ResetAddress(addresses []string) {
 	p.diffAzAddress = []string{}
 	p.sameAzAddress = []string{}
 	p.status = make(map[string]string)
-	p.appendAddressToStatus(addresses)
 }
 
 func (p *Pool) SetAddressByInstances(instances []*discovery.MicroServiceInstance) error {
@@ -88,12 +96,10 @@ func (p *Pool) SetAddressByInstances(instances []*discovery.MicroServiceInstance
 		uniqueAddrList := removeDuplicates(addrList)
 		if p.isSameAzAddr(uniqueAddrList) {
 			p.sameAzAddress = uniqueAddrList
-			p.appendAddressToStatus(uniqueAddrList)
 			openlog.Info(fmt.Sprintf("sync same az endpoints: %s", uniqueAddrList))
 			continue
 		}
 		p.diffAzAddress = uniqueAddrList
-		p.appendAddressToStatus(uniqueAddrList)
 		openlog.Info(fmt.Sprintf("sync different az endpoints: %s", addrList))
 	}
 	return nil
@@ -167,19 +173,66 @@ func (p *Pool) checkConnectivity() {
 		if _, exist := status[v]; exist {
 			continue
 		}
-		conn, err := net.DialTimeout("tcp", v, healthProbeTimeout)
+		err := p.doCheckConnectivity(v)
 		if err != nil {
-			openlog.Error("connectivity unavailable: " + v)
+			openlog.Error(fmt.Sprintf("%s connectivity unavailable: %s", v, err))
 			status[v] = statusUnavailable
 		} else {
 			status[v] = statusAvailable
-			conn.Close()
 		}
 	}
 
 	p.mutex.Lock()
 	p.status = status
 	p.mutex.Unlock()
+}
+
+func (p *Pool) doCheckConnectivity(endpoint string) error {
+	if p.httpProbeOptions != nil {
+		return p.doCheckConnectivityWithHttp(endpoint)
+	}
+
+	return p.doCheckConnectivityWithTcp(endpoint)
+}
+
+func (p *Pool) doCheckConnectivityWithTcp(endpoint string) error {
+	conn, err := net.DialTimeout("tcp", endpoint, healthProbeTimeout)
+	if err != nil {
+		return err
+	}
+
+	err = conn.Close()
+	if err != nil {
+		openlog.Error(fmt.Sprintf("close conn failed when check connectivity: %s", err))
+	}
+
+	return nil
+}
+
+func (p *Pool) doCheckConnectivityWithHttp(endpoint string) error {
+	u := p.httpProbeOptions.Protocol + "://" + endpoint + p.httpProbeOptions.Path
+	resp, err := p.httpProbeOptions.Client.Get(context.Background(), u, nil)
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode >= http.StatusOK && resp.StatusCode < http.StatusMultipleChoices {
+		return nil
+	}
+	// do tcp check if api not exist, ensure to compatible with old scenes
+	if resp.StatusCode == http.StatusNotFound {
+		return p.doCheckConnectivityWithTcp(endpoint)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("http status: %s, read resp error: %s", resp.Status, err)
+	}
+	err = resp.Body.Close()
+	if err != nil {
+		openlog.Error(fmt.Sprintf("close http resp.Body failed when check connectivity: %s", err))
+	}
+	return fmt.Errorf("http status: %s, resp: %s", resp.Status, string(body))
 }
 
 func (p *Pool) monitor() {
