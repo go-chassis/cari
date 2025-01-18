@@ -69,6 +69,10 @@ func NewPool(addresses []string, opts ...Options) *Pool {
 
 	if len(opts) > 0 && opts[0].HttpProbeOptions != nil {
 		p.httpProbeOptions = opts[0].HttpProbeOptions
+		if p.httpProbeOptions.Client == nil {
+			openlog.Info(fmt.Sprintf("http client nil, make one with default options"))
+			p.httpProbeOptions.Client, _ = httpclient.New(nil)
+		}
 	}
 	p.monitor()
 	return p
