@@ -13,18 +13,28 @@ import (
 )
 
 func TestNewPool(t *testing.T) {
+	mockHttpServer := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		writer.WriteHeader(http.StatusOK)
+		return
+	}))
+
 	os.Setenv("CHASSIS_SC_HEALTH_CHECK_INTERVAL", "1")
 
-	defaultAddr := "127.0.0.1:30000"
+	defaultAddr := mockHttpServer.Listener.Addr().String()
 	// can get an address
 	pool := NewPool([]string{defaultAddr})
 	addr := pool.GetAvailableAddress()
 	assert.Equal(t, defaultAddr, addr)
 
 	// check monitor started
-	assert.Equal(t, statusAvailable, pool.status[defaultAddr])
+	assert.NotEqual(t, statusAvailable, pool.status[defaultAddr]) // unavailable by default
+
 	time.Sleep(2*time.Second + 100*time.Millisecond)
-	assert.Equal(t, statusUnavailable, pool.status[defaultAddr]) // the status should be unavailable after check interval
+	assert.Equal(t, statusAvailable, pool.status[defaultAddr])
+
+	mockHttpServer.Close()
+	time.Sleep(2*time.Second + 100*time.Millisecond)
+	assert.NotEqual(t, statusAvailable, pool.status[defaultAddr]) // the status should be unavailable again
 }
 
 func TestAddressPool_GetAvailableAddress_priority(t *testing.T) {
@@ -49,7 +59,9 @@ func TestAddressPool_GetAvailableAddress_priority(t *testing.T) {
 				p.defaultAddress = []string{defaultAddr}
 				p.sameAzAddress = []string{sameAzAddr}
 				p.diffAzAddress = []string{diffAzAddr}
-				p.appendAddressToStatus([]string{defaultAddr, sameAzAddr, diffAzAddr})
+				p.status[sameAzAddr] = statusAvailable
+				p.status[diffAzAddr] = statusAvailable
+				p.status[defaultAddr] = statusAvailable
 			},
 			want: sameAzAddr,
 		},
@@ -57,13 +69,17 @@ func TestAddressPool_GetAvailableAddress_priority(t *testing.T) {
 			name: "diff az address available, return diff az address",
 			preDo: func() {
 				p.status[sameAzAddr] = statusUnavailable
+				p.status[diffAzAddr] = statusAvailable
+				p.status[defaultAddr] = statusAvailable
 			},
 			want: diffAzAddr,
 		},
 		{
 			name: "same az/diff az address unavailable, return default address",
 			preDo: func() {
+				p.status[sameAzAddr] = statusUnavailable
 				p.status[diffAzAddr] = statusUnavailable
+				p.status[defaultAddr] = statusAvailable
 			},
 			want: defaultAddr,
 		},
@@ -144,10 +160,6 @@ func TestAddressPool_SetAddressByInstances(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, []string{"192.168.2.1:30100", "192.168.2.2:30100"}, p.sameAzAddress)
 	assert.Equal(t, []string{"192.168.1.1:30100", "192.168.1.2:30100"}, p.diffAzAddress)
-	assert.Equal(t, statusAvailable, p.status["192.168.1.1:30100"])
-	assert.Equal(t, statusAvailable, p.status["192.168.1.2:30100"])
-	assert.Equal(t, statusAvailable, p.status["192.168.2.1:30100"])
-	assert.Equal(t, statusAvailable, p.status["192.168.2.2:30100"])
 }
 
 func TestAddressPool_checkConnectivity(t *testing.T) {
@@ -164,9 +176,9 @@ func TestAddressPool_checkConnectivity(t *testing.T) {
 	// init, all address is available
 	defaultAddr := "127.0.0.1:30000"
 	p := NewPool([]string{defaultAddr, server1Addr, server2Addr})
-	assert.Equal(t, statusAvailable, p.status[defaultAddr])
-	assert.Equal(t, statusAvailable, p.status[server1Addr])
-	assert.Equal(t, statusAvailable, p.status[server2Addr])
+	assert.NotEqual(t, statusAvailable, p.status[defaultAddr])
+	assert.NotEqual(t, statusAvailable, p.status[server1Addr])
+	assert.NotEqual(t, statusAvailable, p.status[server2Addr])
 
 	// check connectivity, default address status should be unavailable, as it is fake
 	p.checkConnectivity()
