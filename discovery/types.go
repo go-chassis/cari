@@ -253,6 +253,7 @@ type GetServicesResponse struct {
 type UpdateServicePropsRequest struct {
 	ServiceId  string            `protobuf:"bytes,1,opt,name=serviceId" json:"serviceId,omitempty"`
 	Properties map[string]string `protobuf:"bytes,2,rep,name=properties" json:"properties,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Framework  *FrameWork        `protobuf:"bytes,18,opt,name=framework" json:"framework,omitempty"`
 }
 
 type UpdateServicePropsResponse struct {
