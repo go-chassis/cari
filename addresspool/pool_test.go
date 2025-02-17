@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"sync"
 	"testing"
 	"time"
 
@@ -193,4 +194,146 @@ func TestAddressPool_checkConnectivity(t *testing.T) {
 	assert.Equal(t, statusUnavailable, p.status[defaultAddr])
 	assert.Equal(t, statusUnavailable, p.status[server1Addr])
 	assert.Equal(t, statusUnavailable, p.status[server2Addr])
+}
+
+func TestPool_CheckReadiness(t *testing.T) {
+	type fields struct {
+		mutex         sync.RWMutex
+		statusHistory []map[string]string
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   int
+	}{
+		{
+			name: "success",
+			fields: fields{
+				statusHistory: []map[string]string{
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+				},
+			},
+			want: ReadinessSuccess,
+		},
+		{
+			name: "success",
+			fields: fields{
+				statusHistory: []map[string]string{
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+				},
+			},
+			want: ReadinessSuccess,
+		},
+		{
+			name: "success",
+			fields: fields{
+				statusHistory: []map[string]string{
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+					{
+						"1.1.1.1:30110": statusUnavailable,
+						"1.1.1.2:30110": statusAvailable,
+					},
+				},
+			},
+			want: ReadinessSuccess,
+		},
+		{
+			name: "indeterminate",
+			fields: fields{
+				statusHistory: []map[string]string{
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+				},
+			},
+			want: ReadinessIndeterminate,
+		},
+		{
+			name: "indeterminate",
+			fields: fields{
+				statusHistory: []map[string]string{
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+				},
+			},
+			want: ReadinessIndeterminate,
+		},
+		{
+			name: "indeterminate",
+			fields: fields{
+				statusHistory: []map[string]string{
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+				},
+			},
+			want: ReadinessIndeterminate,
+		},
+		{
+			name: "failed",
+			fields: fields{
+				statusHistory: []map[string]string{
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+				},
+			},
+			want: ReadinessFailed,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := &Pool{
+				mutex:         tt.fields.mutex,
+				statusHistory: tt.fields.statusHistory,
+			}
+			assert.Equalf(t, tt.want, p.CheckReadiness(), "CheckReadiness()")
+		})
+	}
 }
