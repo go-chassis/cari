@@ -24,8 +24,14 @@ const (
 	statusAvailable   string = "available"
 	statusUnavailable string = "unavailable"
 
-	defaultCheckScIntervalInSecond = 25 // default sc instance health check interval in second
+	defaultCheckScIntervalInSecond = 15 // default sc instance health check interval in second
 	healthProbeTimeout             = time.Second
+)
+
+const (
+	ReadinessSuccess       = 0 // 连续两次成功
+	ReadinessFailed        = 1 // 连续三次失败
+	ReadinessIndeterminate = 2 // 其他状态
 )
 
 type HttpProbeOptions struct {
@@ -52,6 +58,7 @@ type Pool struct {
 	quit             chan struct{}
 	onceQuit         sync.Once
 	httpProbeOptions *HttpProbeOptions
+	statusHistory    []map[string]string
 }
 
 func (p *Pool) Close() {
@@ -65,6 +72,7 @@ func NewPool(addresses []string, opts ...Options) *Pool {
 	p := &Pool{
 		defaultAddress: removeDuplicates(addresses),
 		status:         make(map[string]string),
+		statusHistory:  make([]map[string]string, 0, 4),
 	}
 
 	if len(opts) > 0 && opts[0].HttpProbeOptions != nil {
@@ -85,6 +93,7 @@ func (p *Pool) ResetAddress(addresses []string) {
 	p.diffAzAddress = []string{}
 	p.sameAzAddress = []string{}
 	p.status = make(map[string]string)
+	p.statusHistory = make([]map[string]string, 0, 4)
 }
 
 func (p *Pool) SetAddressByInstances(instances []*discovery.MicroServiceInstance) error {
@@ -166,6 +175,45 @@ func (p *Pool) filterAvailableAddress(addresses []string) []string {
 	return result
 }
 
+func (p *Pool) CheckReadiness() int {
+	p.mutex.RLock()
+	defer p.mutex.RUnlock()
+	statusHistory := p.statusHistory
+
+	if len(statusHistory) < 2 {
+		return ReadinessIndeterminate
+	}
+
+	successCnt := 0
+	failedCnt := 0
+	for _, status := range statusHistory {
+		if !existAvailableEndpointInStatus(status) {
+			successCnt = 0
+			failedCnt++
+			continue
+		}
+		successCnt++
+		failedCnt = 0
+	}
+	if successCnt >= 2 {
+		return ReadinessSuccess
+	}
+	if failedCnt == 3 {
+		return ReadinessFailed
+	}
+
+	return ReadinessIndeterminate
+}
+
+func existAvailableEndpointInStatus(status map[string]string) bool {
+	for _, v := range status {
+		if v == statusAvailable {
+			return true
+		}
+	}
+	return false
+}
+
 func (p *Pool) checkConnectivity() {
 	toCheckedAddressList := make([]string, 0, len(p.defaultAddress)+len(p.sameAzAddress)+len(p.diffAzAddress))
 	toCheckedAddressList = append(toCheckedAddressList, p.defaultAddress...)
@@ -188,6 +236,10 @@ func (p *Pool) checkConnectivity() {
 
 	p.mutex.Lock()
 	p.status = status
+	p.statusHistory = append(p.statusHistory, status)
+	if len(p.statusHistory) > 3 {
+		p.statusHistory = p.statusHistory[1:]
+	}
 	p.mutex.Unlock()
 }
 
@@ -256,6 +308,7 @@ func (p *Pool) monitor() {
 		ticker := time.NewTicker(interval * time.Second)
 		p.quit = make(chan struct{})
 
+		p.CheckConnectivity()
 		go func() {
 			for {
 				select {
