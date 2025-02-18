@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"sync"
 	"testing"
 	"time"
 
@@ -27,10 +28,7 @@ func TestNewPool(t *testing.T) {
 	assert.Equal(t, defaultAddr, addr)
 
 	// check monitor started
-	assert.NotEqual(t, statusAvailable, pool.status[defaultAddr]) // unavailable by default
-
-	time.Sleep(2*time.Second + 100*time.Millisecond)
-	assert.Equal(t, statusAvailable, pool.status[defaultAddr])
+	assert.Equal(t, statusAvailable, pool.status[defaultAddr]) // available by default
 
 	mockHttpServer.Close()
 	time.Sleep(2*time.Second + 100*time.Millisecond)
@@ -176,12 +174,6 @@ func TestAddressPool_checkConnectivity(t *testing.T) {
 	// init, all address is available
 	defaultAddr := "127.0.0.1:30000"
 	p := NewPool([]string{defaultAddr, server1Addr, server2Addr})
-	assert.NotEqual(t, statusAvailable, p.status[defaultAddr])
-	assert.NotEqual(t, statusAvailable, p.status[server1Addr])
-	assert.NotEqual(t, statusAvailable, p.status[server2Addr])
-
-	// check connectivity, default address status should be unavailable, as it is fake
-	p.checkConnectivity()
 	assert.Equal(t, statusUnavailable, p.status[defaultAddr])
 	assert.Equal(t, statusAvailable, p.status[server1Addr])
 	assert.Equal(t, statusAvailable, p.status[server2Addr])
@@ -193,4 +185,146 @@ func TestAddressPool_checkConnectivity(t *testing.T) {
 	assert.Equal(t, statusUnavailable, p.status[defaultAddr])
 	assert.Equal(t, statusUnavailable, p.status[server1Addr])
 	assert.Equal(t, statusUnavailable, p.status[server2Addr])
+}
+
+func TestPool_CheckReadiness(t *testing.T) {
+	type fields struct {
+		mutex         sync.RWMutex
+		statusHistory []map[string]string
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   int
+	}{
+		{
+			name: "success",
+			fields: fields{
+				statusHistory: []map[string]string{
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+				},
+			},
+			want: ReadinessSuccess,
+		},
+		{
+			name: "success",
+			fields: fields{
+				statusHistory: []map[string]string{
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+				},
+			},
+			want: ReadinessSuccess,
+		},
+		{
+			name: "success",
+			fields: fields{
+				statusHistory: []map[string]string{
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+					{
+						"1.1.1.1:30110": statusUnavailable,
+						"1.1.1.2:30110": statusAvailable,
+					},
+				},
+			},
+			want: ReadinessSuccess,
+		},
+		{
+			name: "indeterminate",
+			fields: fields{
+				statusHistory: []map[string]string{
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+				},
+			},
+			want: ReadinessIndeterminate,
+		},
+		{
+			name: "indeterminate",
+			fields: fields{
+				statusHistory: []map[string]string{
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+				},
+			},
+			want: ReadinessIndeterminate,
+		},
+		{
+			name: "indeterminate",
+			fields: fields{
+				statusHistory: []map[string]string{
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+					{
+						"1.1.1.1:30110": statusAvailable,
+					},
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+				},
+			},
+			want: ReadinessIndeterminate,
+		},
+		{
+			name: "failed",
+			fields: fields{
+				statusHistory: []map[string]string{
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+					{
+						"1.1.1.1:30110": statusUnavailable,
+					},
+				},
+			},
+			want: ReadinessFailed,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := &Pool{
+				mutex:         tt.fields.mutex,
+				statusHistory: tt.fields.statusHistory,
+			}
+			assert.Equalf(t, tt.want, p.CheckReadiness(), "CheckReadiness()")
+		})
+	}
 }
