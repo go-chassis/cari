@@ -237,8 +237,9 @@ func (p *Pool) checkConnectivity() {
 	p.mutex.Lock()
 	p.status = status
 	p.statusHistory = append(p.statusHistory, status)
-	if len(p.statusHistory) > 3 {
-		p.statusHistory = p.statusHistory[1:]
+	cnt := len(p.statusHistory)
+	if cnt > 3 {
+		p.statusHistory = p.statusHistory[(cnt - 3):]
 	}
 	p.mutex.Unlock()
 }
