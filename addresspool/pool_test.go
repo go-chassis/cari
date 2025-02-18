@@ -28,10 +28,7 @@ func TestNewPool(t *testing.T) {
 	assert.Equal(t, defaultAddr, addr)
 
 	// check monitor started
-	assert.NotEqual(t, statusAvailable, pool.status[defaultAddr]) // unavailable by default
-
-	time.Sleep(2*time.Second + 100*time.Millisecond)
-	assert.Equal(t, statusAvailable, pool.status[defaultAddr])
+	assert.Equal(t, statusAvailable, pool.status[defaultAddr]) // available by default
 
 	mockHttpServer.Close()
 	time.Sleep(2*time.Second + 100*time.Millisecond)
@@ -177,12 +174,6 @@ func TestAddressPool_checkConnectivity(t *testing.T) {
 	// init, all address is available
 	defaultAddr := "127.0.0.1:30000"
 	p := NewPool([]string{defaultAddr, server1Addr, server2Addr})
-	assert.NotEqual(t, statusAvailable, p.status[defaultAddr])
-	assert.NotEqual(t, statusAvailable, p.status[server1Addr])
-	assert.NotEqual(t, statusAvailable, p.status[server2Addr])
-
-	// check connectivity, default address status should be unavailable, as it is fake
-	p.checkConnectivity()
 	assert.Equal(t, statusUnavailable, p.status[defaultAddr])
 	assert.Equal(t, statusAvailable, p.status[server1Addr])
 	assert.Equal(t, statusAvailable, p.status[server2Addr])
