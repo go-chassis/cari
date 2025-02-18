@@ -309,7 +309,7 @@ func (p *Pool) monitor() {
 		ticker := time.NewTicker(interval * time.Second)
 		p.quit = make(chan struct{})
 
-		p.CheckConnectivity()
+		p.checkConnectivity()
 		go func() {
 			for {
 				select {
