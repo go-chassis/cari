@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"reflect"
 	"sync"
 	"testing"
 	"time"
@@ -33,6 +34,13 @@ func TestNewPool(t *testing.T) {
 	mockHttpServer.Close()
 	time.Sleep(2*time.Second + 100*time.Millisecond)
 	assert.NotEqual(t, statusAvailable, pool.status[defaultAddr]) // the status should be unavailable again
+
+	httpProbeOpt := &HttpProbeOptions{
+		Protocol: "http",
+	}
+	pool = NewPool([]string{defaultAddr}, Options{HttpProbeOptions: httpProbeOpt})
+	assert.False(t, httpProbeOpt == pool.httpProbeOptions) // not equal but deep equal, as copied
+	assert.True(t, reflect.DeepEqual(httpProbeOpt, pool.httpProbeOptions))
 }
 
 func TestAddressPool_GetAvailableAddress_priority(t *testing.T) {
@@ -327,4 +335,63 @@ func TestPool_CheckReadiness(t *testing.T) {
 			assert.Equalf(t, tt.want, p.CheckReadiness(), "CheckReadiness()")
 		})
 	}
+}
+
+func TestPool_doCheckConnectivity(t *testing.T) {
+	server1HttpCalled := false
+	server1 := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		server1HttpCalled = true
+		return
+	}))
+	server1Addr := server1.Listener.Addr().String()
+
+	// http probe is empty，use tcp probe
+	p := NewPool([]string{server1Addr})
+	assert.NoError(t, p.doCheckConnectivity(server1Addr))
+	assert.False(t, server1HttpCalled)
+
+	// http probe is not empty
+	p = NewPool([]string{server1Addr}, Options{HttpProbeOptions: &HttpProbeOptions{
+		Protocol: "http",
+		Path:     "/",
+	}})
+	assert.NoError(t, p.doCheckConnectivity(server1Addr))
+	assert.True(t, server1HttpCalled)
+	server1.Close()
+	assert.Error(t, p.doCheckConnectivity(server1Addr))
+
+	// http probe got 404，tcp probe again
+	server1HttpCalled = false
+	mux := http.NewServeMux()
+	mux.HandleFunc("/test", func(writer http.ResponseWriter, request *http.Request) {
+		server1HttpCalled = true
+		return
+	})
+	server1 = httptest.NewServer(mux)
+	server1Addr = server1.Listener.Addr().String()
+	p = NewPool([]string{server1Addr}, Options{HttpProbeOptions: &HttpProbeOptions{
+		Protocol: "http",
+		Path:     "/", // wrong path, got 404
+	}})
+	assert.NoError(t, p.doCheckConnectivity(server1Addr))
+	assert.False(t, server1HttpCalled)
+	p.httpProbeOptions.Path = "/test" // right path
+	assert.NoError(t, p.doCheckConnectivity(server1Addr))
+	assert.True(t, server1HttpCalled)
+	server1.Close()
+
+	// https probe
+	server1HttpCalled = false
+	server1 = httptest.NewTLSServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		server1HttpCalled = true
+		return
+	}))
+	server1Addr = server1.Listener.Addr().String()
+	p = NewPool([]string{server1Addr}, Options{HttpProbeOptions: &HttpProbeOptions{
+		Protocol: "https",
+		Path:     "/", // wrong path, got 404
+	}})
+	assert.NoError(t, p.doCheckConnectivity(server1Addr))
+	assert.True(t, server1HttpCalled)
+	server1.Close()
 }

@@ -2,6 +2,7 @@ package addresspool
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"io"
 	"net"
@@ -35,7 +36,6 @@ const (
 )
 
 type HttpProbeOptions struct {
-	Client   *httpclient.Requests
 	Protocol string
 	Path     string
 }
@@ -53,11 +53,13 @@ type Pool struct {
 	sameAzAddress []string
 	diffAzAddress []string
 
-	status           map[string]string
-	onceMonitor      sync.Once
-	quit             chan struct{}
-	onceQuit         sync.Once
+	status      map[string]string
+	onceMonitor sync.Once
+	quit        chan struct{}
+	onceQuit    sync.Once
+
 	httpProbeOptions *HttpProbeOptions
+	httpProbeClient  *httpclient.Requests
 	statusHistory    []map[string]string
 }
 
@@ -76,11 +78,15 @@ func NewPool(addresses []string, opts ...Options) *Pool {
 	}
 
 	if len(opts) > 0 && opts[0].HttpProbeOptions != nil {
-		p.httpProbeOptions = opts[0].HttpProbeOptions
-		if p.httpProbeOptions.Client == nil {
-			openlog.Info(fmt.Sprintf("http client nil, make one with default options"))
-			p.httpProbeOptions.Client, _ = httpclient.New(nil)
+		optCopy := *(opts[0].HttpProbeOptions)
+		p.httpProbeOptions = &optCopy
+		if len(p.httpProbeOptions.Protocol) == 0 {
+			p.httpProbeOptions.Protocol = "http"
 		}
+		p.httpProbeClient, _ = httpclient.New(&httpclient.Options{
+			TLSConfig:      &tls.Config{InsecureSkipVerify: true},
+			RequestTimeout: 5 * time.Second,
+		})
 	}
 	p.monitor()
 	return p
@@ -268,7 +274,7 @@ func (p *Pool) doCheckConnectivityWithTcp(endpoint string) error {
 
 func (p *Pool) doCheckConnectivityWithHttp(endpoint string) error {
 	u := p.httpProbeOptions.Protocol + "://" + endpoint + p.httpProbeOptions.Path
-	resp, err := p.httpProbeOptions.Client.Get(context.Background(), u, nil)
+	resp, err := p.httpProbeClient.Get(context.Background(), u, nil)
 	if err != nil {
 		return err
 	}
