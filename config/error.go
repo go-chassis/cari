@@ -22,6 +22,7 @@ import (
 )
 
 const (
+	ErrHasModified         int32 = 304001
 	ErrInvalidParams       int32 = 400001
 	ErrHealthCheck         int32 = 400002
 	ErrObserveEvent        int32 = 400003
@@ -35,6 +36,7 @@ const (
 )
 
 var errorsMap = map[int32]string{
+	ErrHasModified:         "kvs has modified, need to try again",
 	ErrInvalidParams:       "invalid parameter(s)",
 	ErrHealthCheck:         "failed to check kie healthy",
 	ErrRequiredRecordId:    "required record id",
