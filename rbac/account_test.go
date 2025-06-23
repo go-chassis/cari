@@ -95,7 +95,7 @@ func TestAccount_HasAdminRole(t *testing.T) {
 		{
 			name: "not admin",
 			a:    &Account{Roles: []string{RoleDeveloper}},
-			want: true,
+			want: false,
 		},
 	}
 	for _, tt := range tests {
