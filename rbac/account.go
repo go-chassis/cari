@@ -80,3 +80,16 @@ type AuthUser struct {
 	Username string `json:"name,omitempty"`
 	Password string `json:"password,omitempty"`
 }
+
+func (a *Account) HasAdminRole() bool {
+	if a.Role == RoleAdmin {
+		return true
+	}
+
+	for _, r := range a.Roles {
+		if r == RoleAdmin {
+			return true
+		}
+	}
+	return false
+}

@@ -17,7 +17,9 @@
 
 package rbac
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestAccount_Check(t *testing.T) {
 	type fields struct {
@@ -71,5 +73,36 @@ func TestAccount_Check(t *testing.T) {
 		if err := a.Check(); (err != nil) != tt.wantErr {
 			t.Errorf("%q. Account.Check() error = %v, wantErr %v", tt.name, err, tt.wantErr)
 		}
+	}
+}
+
+func TestAccount_HasAdminRole(t *testing.T) {
+	tests := []struct {
+		name string
+		a    *Account
+		want bool
+	}{
+		{
+			name: "compatible with old",
+			a:    &Account{Role: RoleAdmin},
+			want: true,
+		},
+		{
+			name: "has admin",
+			a:    &Account{Roles: []string{RoleAdmin, RoleDeveloper}},
+			want: true,
+		},
+		{
+			name: "not admin",
+			a:    &Account{Roles: []string{RoleDeveloper}},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.a.HasAdminRole(); got != tt.want {
+				t.Errorf("Account.HasAdminRole() = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }
