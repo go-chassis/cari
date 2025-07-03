@@ -42,6 +42,7 @@ type HttpProbeOptions struct {
 
 type Options struct {
 	HttpProbeOptions *HttpProbeOptions // used in available check if set, tcp will be used if not set
+	DiffAzEndpoints  []string
 }
 
 // Pool cloud server address pool
@@ -77,17 +78,23 @@ func NewPool(addresses []string, opts ...Options) *Pool {
 		statusHistory:  make([]map[string]string, 0, 4),
 	}
 
-	if len(opts) > 0 && opts[0].HttpProbeOptions != nil {
-		optCopy := *(opts[0].HttpProbeOptions)
-		p.httpProbeOptions = &optCopy
-		if len(p.httpProbeOptions.Protocol) == 0 {
-			p.httpProbeOptions.Protocol = "http"
+	if len(opts) > 0 {
+		if opts[0].HttpProbeOptions != nil {
+			optCopy := *(opts[0].HttpProbeOptions)
+			p.httpProbeOptions = &optCopy
+			if len(p.httpProbeOptions.Protocol) == 0 {
+				p.httpProbeOptions.Protocol = "http"
+			}
+			p.httpProbeClient, _ = httpclient.New(&httpclient.Options{
+				TLSConfig:      &tls.Config{InsecureSkipVerify: true},
+				RequestTimeout: 5 * time.Second,
+			})
 		}
-		p.httpProbeClient, _ = httpclient.New(&httpclient.Options{
-			TLSConfig:      &tls.Config{InsecureSkipVerify: true},
-			RequestTimeout: 5 * time.Second,
-		})
+		if len(opts[0].DiffAzEndpoints) != 0 {
+			p.diffAzAddress = opts[0].DiffAzEndpoints
+		}
 	}
+	
 	p.monitor()
 	return p
 }
