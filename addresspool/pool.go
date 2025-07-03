@@ -42,7 +42,7 @@ type HttpProbeOptions struct {
 
 type Options struct {
 	HttpProbeOptions *HttpProbeOptions // used in available check if set, tcp will be used if not set
-	DiffAzEndponits  []string
+	DiffAzEndpoints  []string
 }
 
 // Pool cloud server address pool
@@ -90,8 +90,8 @@ func NewPool(addresses []string, opts ...Options) *Pool {
 				RequestTimeout: 5 * time.Second,
 			})
 		}
-		if len(opts[0].DiffAzEndponits) != 0 {
-			p.diffAzAddress = opts[0].DiffAzEndponits
+		if len(opts[0].DiffAzEndpoints) != 0 {
+			p.diffAzAddress = opts[0].DiffAzEndpoints
 		}
 	}
 	
