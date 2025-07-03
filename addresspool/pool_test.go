@@ -168,6 +168,81 @@ func TestAddressPool_SetAddressByInstances(t *testing.T) {
 	assert.Equal(t, []string{"192.168.1.1:30100", "192.168.1.2:30100"}, p.diffAzAddress)
 }
 
+// pool 存在diffAzAddress时，通过SetAddressByInstances方法后，diffAzAddress不会为空
+func TestAddressPool_SetAddressByInstancesForDiffAzAddress(t *testing.T) {
+	p := NewPool([]string{"192.168.3.1:30100"}, Options{
+		DiffAzEndpoints: []string{"192.168.3.5:30100"}})
+	err := p.SetAddressByInstances(nil)
+	assert.Error(t, err)
+	assert.Equal(t, []string{"192.168.3.5:30100"}, p.diffAzAddress)
+
+	err = p.SetAddressByInstances([]*discovery.MicroServiceInstance{})
+	assert.Error(t, err)
+	assert.Equal(t, []string{"192.168.3.5:30100"}, p.diffAzAddress)
+
+	// SetAddressByInstances仅传入本端地址时
+	err = p.SetAddressByInstances([]*discovery.MicroServiceInstance{
+		{
+			Endpoints: []string{"rest://192.168.3.1:30100"},
+		},
+	})
+	assert.NoError(t, err)
+	assert.Equal(t, []string{"192.168.3.5:30100"}, p.diffAzAddress)
+
+	// SetAddressByInstances仅传入对端地址时
+	err = p.SetAddressByInstances([]*discovery.MicroServiceInstance{
+		{
+			Endpoints: []string{"rest://192.168.3.5:30100"},
+		},
+	})
+	assert.NoError(t, err)
+	assert.Equal(t, []string{"192.168.3.5:30100"}, p.diffAzAddress)
+
+	// SetAddressByInstances同时传入本端和对端地址时
+	err = p.SetAddressByInstances([]*discovery.MicroServiceInstance{
+		{
+			Endpoints: []string{"rest://192.168.3.1:30100"},
+			DataCenterInfo: &discovery.DataCenterInfo{
+				Name:          "engine2",
+				Region:        "cn1",
+				AvailableZone: "cn1a",
+			},
+		},
+		{
+			Endpoints: []string{"rest://192.168.3.5:30100"},
+			DataCenterInfo: &discovery.DataCenterInfo{
+				Name:          "engine2",
+				Region:        "cn2",
+				AvailableZone: "cn2a",
+			},
+		},
+	})
+	assert.NoError(t, err)
+	assert.Equal(t, []string{"192.168.3.5:30100"}, p.diffAzAddress)
+
+	// SetAddressByInstances 两个地址都传入为同AZ地址时
+	err = p.SetAddressByInstances([]*discovery.MicroServiceInstance{
+		{
+			Endpoints: []string{"rest://192.168.3.1:30100"},
+			DataCenterInfo: &discovery.DataCenterInfo{
+				Name:          "engine2",
+				Region:        "cn3",
+				AvailableZone: "cn3a",
+			},
+		},
+		{
+			Endpoints: []string{"rest://192.168.3.5:30100"},
+			DataCenterInfo: &discovery.DataCenterInfo{
+				Name:          "engine2",
+				Region:        "cn3",
+				AvailableZone: "cn3a",
+			},
+		},
+	})
+	assert.NoError(t, err)
+	assert.Equal(t, []string{"192.168.3.5:30100"}, p.diffAzAddress)
+}
+
 func TestAddressPool_checkConnectivity(t *testing.T) {
 	server1 := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		return
